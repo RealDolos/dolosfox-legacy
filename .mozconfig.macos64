@@ -1,0 +1,13 @@
+export MOZILLA_OFFICIAL=1
+export MOZ_PACKAGE_JSSHELL=1
+
+ac_add_options --disable-crashreporter
+ac_add_options --disable-debug
+ac_add_options --disable-updater
+ac_add_options --enable-jemalloc
+ac_add_options --enable-js-shell
+ac_add_options --enable-libjpeg-turbo
+ac_add_options --enable-optimize="-Os -march=native -mtune=native -pipe"
+ac_add_options --enable-rust-simd 
+ac_add_options --with-branding=browser/branding/dolosfox
+ac_add_options MOZILLA_OFFICIAL=1
