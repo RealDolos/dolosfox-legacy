@@ -21,7 +21,7 @@ Instructions
 
 * Create an appropriate `.mozconfig`, I suggest you do the following (with platform being your platform)
 
-  ```echo source $PWD/dolosfox/.mozconfig.platform > .mozconfig```
+  ```echo source $PWD/../dolosfox/.mozconfig.platform > .mozconfig```
 
 * `./mach build && ./mach package` (package gives you a zip with binaries)
 
