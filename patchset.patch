@@ -2,8 +2,8 @@
 # User RealDolos <dolos@cock.li>
 # Date 1517405006 -3600
 #      Wed Jan 31 14:23:26 2018 +0100
-# Node ID 09b8de5c1b4cead29d83447adfeeab9791cd3791
-# Parent  9b69cc60e5848f2f8802c911fd00771b50eed41f
+# Node ID 4d18585a7e36b0d0482d94c8c6ed030f12cfd1ea
+# Parent  40ba247350dad945cccd29680ee53d578c006420
 Readd DeferredSave.jsm
 
 e.g. DTA compat
@@ -909,14 +909,14 @@ diff --git a/toolkit/mozapps/extensions/test/xpcshell/xpcshell.ini b/toolkit/moz
 # User RealDolos <dolos@cock.li>
 # Date 1517409436 -3600
 #      Wed Jan 31 15:37:16 2018 +0100
-# Node ID 96ed91dcf3512f8dcefead94e639127837e9877e
-# Parent  09b8de5c1b4cead29d83447adfeeab9791cd3791
+# Node ID 3f7c6872b9478948fe73602a68ef75ff2ce58d05
+# Parent  4d18585a7e36b0d0482d94c8c6ed030f12cfd1ea
 Make prefwindows work again
 
 diff --git a/toolkit/content/jar.mn b/toolkit/content/jar.mn
 --- a/toolkit/content/jar.mn
 +++ b/toolkit/content/jar.mn
-@@ -81,16 +81,17 @@ toolkit.jar:
+@@ -80,16 +80,17 @@ toolkit.jar:
     content/global/bindings/general.xml         (widgets/general.xml)
     content/global/bindings/groupbox.xml        (widgets/groupbox.xml)
     content/global/bindings/listbox.xml         (widgets/listbox.xml)
@@ -937,7 +937,7 @@ diff --git a/toolkit/content/jar.mn b/toolkit/content/jar.mn
 diff --git a/toolkit/content/xul.css b/toolkit/content/xul.css
 --- a/toolkit/content/xul.css
 +++ b/toolkit/content/xul.css
-@@ -963,16 +963,66 @@ wizardpage {
+@@ -946,16 +946,66 @@ wizardpage {
  .wizard-header {
    -moz-binding: url("chrome://global/content/bindings/wizard.xml#wizard-header");
  }
@@ -1132,10 +1132,10 @@ diff --git a/toolkit/themes/windows/global/jar.mn b/toolkit/themes/windows/globa
    skin/classic/global/listbox.css
 # HG changeset patch
 # User RealDolos <dolos@cock.li>
-# Date 1517409596 -3600
-#      Wed Jan 31 15:39:56 2018 +0100
-# Node ID 50bde94aa1f0861acba76cc3ec8aa7e5b2dee154
-# Parent  96ed91dcf3512f8dcefead94e639127837e9877e
+# Date 1519346343 -3600
+#      Fri Feb 23 01:39:03 2018 +0100
+# Node ID b162e79f1895067358494c7e0febd8094f49f608
+# Parent  3f7c6872b9478948fe73602a68ef75ff2ce58d05
 Readd tree progress meters
 
 Backed out changeset f2f92fe82b0e
@@ -1185,7 +1185,7 @@ diff --git a/browser/base/content/pageinfo/pageInfo.js b/browser/base/content/pa
 diff --git a/browser/components/places/content/treeView.js b/browser/components/places/content/treeView.js
 --- a/browser/components/places/content/treeView.js
 +++ b/browser/components/places/content/treeView.js
-@@ -1530,16 +1530,17 @@ PlacesTreeView.prototype = {
+@@ -1538,16 +1538,17 @@ PlacesTreeView.prototype = {
      // Only the title column has an image.
      if (this._getColumnType(aColumn) != this.COLUMN_TYPE_TITLE)
        return "";
@@ -1227,7 +1227,7 @@ diff --git a/browser/components/preferences/blocklists.js b/browser/components/p
 diff --git a/browser/components/preferences/cookies.js b/browser/components/preferences/cookies.js
 --- a/browser/components/preferences/cookies.js
 +++ b/browser/components/preferences/cookies.js
-@@ -396,16 +396,17 @@ var gCookiesWindow = {
+@@ -400,16 +400,17 @@ var gCookiesWindow = {
        if (!this._filtered) {
          var item = this._getItemAtIndex(aIndex);
          if (!item) return 0;
@@ -1290,24 +1290,17 @@ diff --git a/browser/components/preferences/permissions.js b/browser/components/
 diff --git a/browser/components/preferences/siteDataRemoveSelected.js b/browser/components/preferences/siteDataRemoveSelected.js
 --- a/browser/components/preferences/siteDataRemoveSelected.js
 +++ b/browser/components/preferences/siteDataRemoveSelected.js
-@@ -179,16 +179,17 @@ let gSiteDataRemoveSelected = {
-       return false;
+@@ -36,9 +36,10 @@ let gSiteDataRemoveSelected = {
      },
-     drop() {},
-     getRowProperties() {},
-     getCellProperties() {},
-     getColumnProperties() {},
-     hasPreviousSibling(index) {},
-     getImageSrc() {},
+     getCellText(index, column) {
+       return this._hosts[index];
+     },
+     getLevel(index) {
+       return 0;
+     },
+   },
 +    getProgressMode() {},
-     getCellValue() {},
-     cycleHeader() {},
-     selectionChanged() {},
-     cycleCell() {},
-     isEditable() {},
-     isSelectable() {},
-     setCellValue() {},
-     setCellText() {},
+ };
 diff --git a/browser/components/preferences/translation.js b/browser/components/preferences/translation.js
 --- a/browser/components/preferences/translation.js
 +++ b/browser/components/preferences/translation.js
@@ -1916,30 +1909,26 @@ diff --git a/security/manager/ssl/nsCertTree.cpp b/security/manager/ssl/nsCertTr
 diff --git a/toolkit/components/autocomplete/nsAutoCompleteController.cpp b/toolkit/components/autocomplete/nsAutoCompleteController.cpp
 --- a/toolkit/components/autocomplete/nsAutoCompleteController.cpp
 +++ b/toolkit/components/autocomplete/nsAutoCompleteController.cpp
-@@ -942,16 +942,23 @@ nsAutoCompleteController::GetImageSrc(in
- 
-   if (NS_LITERAL_STRING("treecolAutoCompleteValue").Equals(colID))
-     return GetImageAt(row, _retval);
- 
-   return NS_OK;
- }
+@@ -871,19 +871,16 @@ nsAutoCompleteController::Notify(nsITime
  
  NS_IMETHODIMP
-+nsAutoCompleteController::GetProgressMode(int32_t row, nsITreeColumn* col, int32_t* _retval)
-+{
-+  NS_NOTREACHED("tree has no progress cells");
-+  return NS_OK;
-+}
-+
-+NS_IMETHODIMP
- nsAutoCompleteController::GetCellValue(int32_t row, nsITreeColumn* col, nsAString& _retval)
+ nsAutoCompleteController::GetName(nsACString& aName)
  {
-   NS_NOTREACHED("all of our cells are text");
+   aName.AssignLiteral("nsAutoCompleteController");
    return NS_OK;
  }
  
- NS_IMETHODIMP
- nsAutoCompleteController::GetCellText(int32_t row, nsITreeColumn* col, nsAString& _retval)
+-////////////////////////////////////////////////////////////////////////
+-//// nsAutoCompleteController
+-
+ nsresult
+ nsAutoCompleteController::OpenPopup()
+ {
+   uint32_t minResults;
+   mInput->GetMinResultsForPopup(&minResults);
+ 
+   if (mMatchCount >= minResults) {
+     return mInput->SetPopupOpen(true);
 diff --git a/toolkit/components/passwordmgr/content/passwordManager.js b/toolkit/components/passwordmgr/content/passwordManager.js
 --- a/toolkit/components/passwordmgr/content/passwordManager.js
 +++ b/toolkit/components/passwordmgr/content/passwordManager.js
@@ -2149,8 +2138,8 @@ diff --git a/toolkit/themes/windows/global/tree.css b/toolkit/themes/windows/glo
 # User RealDolos <dolos@cock.li>
 # Date 1517419857 -3600
 #      Wed Jan 31 18:30:57 2018 +0100
-# Node ID f7fb45c929ec4339065bb8e928b5197fbead2e54
-# Parent  50bde94aa1f0861acba76cc3ec8aa7e5b2dee154
+# Node ID 952bbed9877230722524cfebcdde0f2a2bb7c601
+# Parent  b162e79f1895067358494c7e0febd8094f49f608
 Readd statusbar bindings
 
 Backed out changeset 38f11a0d4111
@@ -2269,7 +2258,7 @@ diff --git a/toolkit/content/widgets/general.xml b/toolkit/content/widgets/gener
 diff --git a/toolkit/content/xul.css b/toolkit/content/xul.css
 --- a/toolkit/content/xul.css
 +++ b/toolkit/content/xul.css
-@@ -255,16 +255,17 @@ caption {
+@@ -251,16 +251,17 @@ caption {
    -moz-box-orient: vertical;
  }
  
@@ -2287,7 +2276,7 @@ diff --git a/toolkit/content/xul.css b/toolkit/content/xul.css
  /* The list below is non-comprehensive and will probably need some tweaking. */
  toolbaritem,
  toolbarbutton,
-@@ -499,16 +500,26 @@ panel[type="arrow"][side][animate="cance
+@@ -482,16 +483,26 @@ panel[type="arrow"][side][animate="cance
    transform: none;
  }
  
@@ -2314,7 +2303,7 @@ diff --git a/toolkit/content/xul.css b/toolkit/content/xul.css
  
  rows,
  columns {
-@@ -914,16 +925,41 @@ arrowscrollbox {
+@@ -897,16 +908,41 @@ arrowscrollbox {
  arrowscrollbox[clicktoscroll="true"] {
    -moz-binding: url("chrome://global/content/bindings/scrollbox.xml#arrowscrollbox-clicktoscroll");
  }
@@ -2443,11 +2432,11 @@ diff --git a/toolkit/themes/linux/global/global.css b/toolkit/themes/linux/globa
    -moz-appearance: none;
  }
  
- :root:-moz-lwtheme-darktext {
+ :root[lwtheme-image]:-moz-lwtheme-darktext {
    text-shadow: 0 -0.5px 1.5px white;
  }
  
- :root:-moz-lwtheme-brighttext {
+ :root[lwtheme-image]:-moz-lwtheme-brighttext {
 @@ -220,16 +252,20 @@ label[disabled="true"] {
  .box-padded {
    padding: 5px;
@@ -2547,11 +2536,11 @@ diff --git a/toolkit/themes/osx/global/global.css b/toolkit/themes/osx/global/gl
  }
  
 @@ -107,16 +137,23 @@ sidebarheader {
- :root:-moz-lwtheme-darktext {
+ :root[lwtheme-image]:-moz-lwtheme-darktext {
    text-shadow: 0 -0.5px 1.5px white;
  }
  
- :root:-moz-lwtheme-brighttext {
+ :root[lwtheme-image]:-moz-lwtheme-brighttext {
    text-shadow: 1px 1px 1.5px black;
  }
  
@@ -2677,11 +2666,11 @@ diff --git a/toolkit/themes/windows/global/global.css b/toolkit/themes/windows/g
  
  sidebarheader > label {
 @@ -133,16 +177,22 @@ toolbar[mode="text"] .toolbarbutton-text
- :root:-moz-lwtheme-darktext {
+ :root[lwtheme-image]:-moz-lwtheme-darktext {
    text-shadow: 0 -0.5px 1.5px white;
  }
  
- :root:-moz-lwtheme-brighttext {
+ :root[lwtheme-image]:-moz-lwtheme-brighttext {
    text-shadow: 1px 1px 1.5px black;
  }
  
@@ -2724,8 +2713,8 @@ diff --git a/toolkit/themes/windows/global/global.css b/toolkit/themes/windows/g
 # User RealDolos <dolos@cock.li>
 # Date 1517467292 -3600
 #      Thu Feb 01 07:41:32 2018 +0100
-# Node ID 622b892cd6958c342cefd2a8ad074c9fde1a0681
-# Parent  f7fb45c929ec4339065bb8e928b5197fbead2e54
+# Node ID 45ff971ec0fcedaf764dcd0ff1b99efb908b0da0
+# Parent  952bbed9877230722524cfebcdde0f2a2bb7c601
 Put pack default pref loading
 
 Backed out changeset 1e5c582b5f3e
@@ -2770,7 +2759,7 @@ diff --git a/modules/libpref/Preferences.cpp b/modules/libpref/Preferences.cpp
  #include "nsIStringEnumerator.h"
  #include "nsISupportsImpl.h"
  #include "nsISupportsPrimitives.h"
-@@ -1277,17 +1280,17 @@ private:
+@@ -1322,17 +1325,17 @@ private:
  
    // We need a canonical nsISupports pointer, per bug 578392.
    nsISupports* mCanonical;
@@ -2789,7 +2778,7 @@ diff --git a/modules/libpref/Preferences.cpp b/modules/libpref/Preferences.cpp
  public:
    NS_DECL_ISUPPORTS
    NS_DECL_NSIPREFBRANCH
-@@ -1439,16 +1442,18 @@ nsPrefBranch::~nsPrefBranch()
+@@ -1484,16 +1487,18 @@ nsPrefBranch::~nsPrefBranch()
      mozilla::services::GetObserverService();
    if (observerService) {
      observerService->RemoveObserver(this, NS_XPCOM_SHUTDOWN_OBSERVER_ID);
@@ -2808,7 +2797,7 @@ diff --git a/modules/libpref/Preferences.cpp b/modules/libpref/Preferences.cpp
  {
    aRoot = mPrefRoot;
    return NS_OK;
-@@ -1759,16 +1764,30 @@ nsPrefBranch::GetComplexValue(const char
+@@ -1804,16 +1809,30 @@ nsPrefBranch::GetComplexValue(const char
      if (NS_FAILED(rv)) {
        return rv;
      }
@@ -2839,7 +2828,7 @@ diff --git a/modules/libpref/Preferences.cpp b/modules/libpref/Preferences.cpp
  nsPrefBranch::CheckSanityOfStringLength(const char* aPrefName,
                                          const nsAString& aValue)
  {
-@@ -1876,17 +1895,18 @@ nsPrefBranch::SetComplexValue(const char
+@@ -1921,17 +1940,18 @@ nsPrefBranch::SetComplexValue(const char
      nsAutoCString descriptorString;
      descriptorString.Append('[');
      descriptorString.Append(relativeToKey);
@@ -2859,7 +2848,7 @@ diff --git a/modules/libpref/Preferences.cpp b/modules/libpref/Preferences.cpp
        rv = theString->GetData(wideString);
        if (NS_SUCCEEDED(rv)) {
          // Check sanity of string length before any lengthy conversion
-@@ -2365,16 +2385,19 @@ Preferences::HandleDirty()
+@@ -2410,16 +2430,19 @@ Preferences::HandleDirty()
          PREF_DELAY_MS);
      }
    }
@@ -2879,7 +2868,7 @@ diff --git a/modules/libpref/Preferences.cpp b/modules/libpref/Preferences.cpp
    "// Mozilla User Preferences"
    NS_LINEBREAK
    NS_LINEBREAK
-@@ -2877,16 +2900,18 @@ Preferences::GetInstanceForService()
+@@ -2922,16 +2945,18 @@ Preferences::GetInstanceForService()
  
      observerService->AddObserver(
        sPreferences, "profile-before-change-telemetry", true);
@@ -2898,7 +2887,7 @@ diff --git a/modules/libpref/Preferences.cpp b/modules/libpref/Preferences.cpp
      }
    }
  
-@@ -2969,16 +2994,18 @@ Preferences::~Preferences()
+@@ -3014,16 +3039,18 @@ Preferences::~Preferences()
  
    gPrefNameArena.Clear();
  }
@@ -2917,7 +2906,7 @@ diff --git a/modules/libpref/Preferences.cpp b/modules/libpref/Preferences.cpp
    MOZ_ASSERT(!XRE_IsParentProcess());
  
    gEarlyDomPrefs = new InfallibleTArray<dom::Pref>(mozilla::Move(*aDomPrefs));
-@@ -3056,16 +3083,19 @@ Preferences::Observe(nsISupports* aSubje
+@@ -3101,16 +3128,19 @@ Preferences::Observe(nsISupports* aSubje
      SavePrefFileBlocking();
      MOZ_ASSERT(!mDirty, "Preferences should not be dirty");
      mProfileShutdown = true;
@@ -2937,7 +2926,7 @@ diff --git a/modules/libpref/Preferences.cpp b/modules/libpref/Preferences.cpp
    }
  
    return rv;
-@@ -3168,16 +3198,51 @@ Preferences::SavePrefFileAsynchronous()
+@@ -3213,16 +3243,51 @@ Preferences::SavePrefFileAsynchronous()
  
  NS_IMETHODIMP
  Preferences::SavePrefFile(nsIFile* aFile)
@@ -2989,7 +2978,7 @@ diff --git a/modules/libpref/Preferences.cpp b/modules/libpref/Preferences.cpp
  
    const char* prefName = aDomPref.name().get();
  
-@@ -3628,16 +3693,59 @@ pref_LoadPrefsInDir(nsIFile* aDir,
+@@ -3680,16 +3745,59 @@ pref_LoadPrefsInDir(nsIFile* aDir,
        }
      }
    }
@@ -3049,7 +3038,7 @@ diff --git a/modules/libpref/Preferences.cpp b/modules/libpref/Preferences.cpp
    MOZ_TRY_VAR(manifest,
                URLPreloader::ReadZip(aJarReader, nsDependentCString(aName)));
  
-@@ -3783,43 +3891,19 @@ Preferences::InitInitialObjects()
+@@ -3835,43 +3943,19 @@ Preferences::InitInitialObjects()
      for (uint32_t i = prefEntries.Length(); i--;) {
        rv = pref_ReadPrefFromJar(appJarReader, prefEntries[i].get());
        if (NS_FAILED(rv)) {
@@ -3095,7 +3084,7 @@ diff --git a/modules/libpref/Preferences.cpp b/modules/libpref/Preferences.cpp
    // are testing final release builds don't flipflop defaults.
    if (Preferences::GetType(kTelemetryPref) == nsIPrefBranch::PREF_INVALID) {
      bool prerelease = false;
-@@ -3864,16 +3948,20 @@ Preferences::InitInitialObjects()
+@@ -3928,16 +4012,20 @@ Preferences::InitInitialObjects()
  
    nsCOMPtr<nsIObserverService> observerService =
      mozilla::services::GetObserverService();
@@ -3160,7 +3149,7 @@ diff --git a/modules/libpref/Preferences.h b/modules/libpref/Preferences.h
 diff --git a/modules/libpref/init/all.js b/modules/libpref/init/all.js
 --- a/modules/libpref/init/all.js
 +++ b/modules/libpref/init/all.js
-@@ -5921,16 +5921,20 @@ pref("layers.advanced.columnRule-layers"
+@@ -5995,16 +5995,20 @@ pref("layers.advanced.columnRule-layers"
  pref("layers.advanced.image-layers", 2);
  pref("layers.advanced.outline-layers", 2);
  pref("layers.advanced.solid-color", false);
@@ -4875,7 +4864,7 @@ new file mode 100644
 diff --git a/toolkit/xre/nsXREDirProvider.cpp b/toolkit/xre/nsXREDirProvider.cpp
 --- a/toolkit/xre/nsXREDirProvider.cpp
 +++ b/toolkit/xre/nsXREDirProvider.cpp
-@@ -941,16 +941,34 @@ nsXREDirProvider::GetFilesInternal(const
+@@ -931,16 +931,34 @@ nsXREDirProvider::GetFilesInternal(const
                          directories);
      }
  
@@ -4910,7 +4899,7 @@ diff --git a/toolkit/xre/nsXREDirProvider.cpp b/toolkit/xre/nsXREDirProvider.cpp
  
  NS_IMETHODIMP
  nsXREDirProvider::GetDirectory(nsIFile* *aResult)
-@@ -1021,16 +1039,18 @@ nsXREDirProvider::DoStartup()
+@@ -1011,16 +1029,18 @@ nsXREDirProvider::DoStartup()
      nsCOMPtr<nsIObserver> em = do_GetService("@mozilla.org/addons/integration;1");
      if (em) {
        em->Observe(nullptr, "addons-startup", nullptr);
@@ -4954,8 +4943,8 @@ diff --git a/xpcom/io/nsAppDirectoryServiceDefs.h b/xpcom/io/nsAppDirectoryServi
 # User RealDolos <dolos@cock.li>
 # Date 1517467085 -3600
 #      Thu Feb 01 07:38:05 2018 +0100
-# Node ID 7edb0779c26423680cefebbbe792b2cc429a1ef8
-# Parent  622b892cd6958c342cefd2a8ad074c9fde1a0681
+# Node ID e770506e845c248cb4498c9582e9b4dc98fd3bc7
+# Parent  45ff971ec0fcedaf764dcd0ff1b99efb908b0da0
 Put back nsIURI.path
 
 diff --git a/caps/NullPrincipalURI.cpp b/caps/NullPrincipalURI.cpp
@@ -5037,7 +5026,7 @@ diff --git a/image/decoders/icon/nsIconURI.cpp b/image/decoders/icon/nsIconURI.c
 diff --git a/modules/libjar/nsJARURI.cpp b/modules/libjar/nsJARURI.cpp
 --- a/modules/libjar/nsJARURI.cpp
 +++ b/modules/libjar/nsJARURI.cpp
-@@ -509,22 +509,34 @@ NS_IMETHODIMP
+@@ -507,22 +507,34 @@ NS_IMETHODIMP
  nsJARURI::GetPathQueryRef(nsACString &aPath)
  {
      nsAutoCString entrySpec;
@@ -5075,7 +5064,7 @@ diff --git a/modules/libjar/nsJARURI.cpp b/modules/libjar/nsJARURI.cpp
 diff --git a/netwerk/base/nsIURI.idl b/netwerk/base/nsIURI.idl
 --- a/netwerk/base/nsIURI.idl
 +++ b/netwerk/base/nsIURI.idl
-@@ -181,16 +181,17 @@ interface nsIURI : nsISupports
+@@ -183,16 +183,17 @@ interface nsIURI : nsISupports
       * empty, depending on the protocol).
       *
       * Some characters may be escaped.
@@ -5096,7 +5085,7 @@ diff --git a/netwerk/base/nsIURI.idl b/netwerk/base/nsIURI.idl
 diff --git a/netwerk/base/nsSimpleURI.cpp b/netwerk/base/nsSimpleURI.cpp
 --- a/netwerk/base/nsSimpleURI.cpp
 +++ b/netwerk/base/nsSimpleURI.cpp
-@@ -448,22 +448,35 @@ nsSimpleURI::GetPathQueryRef(nsACString 
+@@ -447,22 +447,35 @@ nsSimpleURI::GetPathQueryRef(nsACString 
      if (mIsRefValid) {
          result += NS_LITERAL_CSTRING("#") + mRef;
      }
@@ -5158,7 +5147,7 @@ diff --git a/netwerk/base/nsStandardURL.cpp b/netwerk/base/nsStandardURL.cpp
          if (IsASCII(mSpec))
              mSpecEncoding = eEncoding_ASCII;
          else
-@@ -2221,16 +2227,22 @@ nsStandardURL::SetPathQueryRef(const nsA
+@@ -2225,16 +2231,22 @@ nsStandardURL::SetPathQueryRef(const nsA
          mBasename.mLen = -1;
          mExtension.mLen = -1;
          mQuery.mLen = -1;
@@ -5185,8 +5174,8 @@ diff --git a/netwerk/base/nsStandardURL.cpp b/netwerk/base/nsStandardURL.cpp
 # User RealDolos <dolos@cock.li>
 # Date 1517467105 -3600
 #      Thu Feb 01 07:38:25 2018 +0100
-# Node ID d8afcecadd13484ee73215eb678b3cefe54bfc65
-# Parent  7edb0779c26423680cefebbbe792b2cc429a1ef8
+# Node ID 3d821ad9e4c6958d1d3fd7399e744d8bfa4fcc9d
+# Parent  e770506e845c248cb4498c9582e9b4dc98fd3bc7
 Put back nsIProgrammingLanguage
 
 diff --git a/xpcom/base/moz.build b/xpcom/base/moz.build
@@ -5244,8 +5233,8 @@ new file mode 100644
 # User RealDolos <dolos@cock.li>
 # Date 1517467168 -3600
 #      Thu Feb 01 07:39:28 2018 +0100
-# Node ID 6cf051dff8e56936e32916242165a210a588f22e
-# Parent  d8afcecadd13484ee73215eb678b3cefe54bfc65
+# Node ID 5df092b49ad3d17ef66fc90024752ab033268682
+# Parent  3d821ad9e4c6958d1d3fd7399e744d8bfa4fcc9d
 Who needs security theater?
 
 diff --git a/browser/app/profile/firefox.js b/browser/app/profile/firefox.js
@@ -5270,7 +5259,7 @@ diff --git a/browser/app/profile/firefox.js b/browser/app/profile/firefox.js
  // At startup, should we check to see if the installation
  // date is older than some threshold
  pref("app.update.checkInstallTime", true);
-@@ -1576,17 +1576,17 @@ pref("browser.tabs.crashReporting.email"
+@@ -1582,17 +1582,17 @@ pref("browser.tabs.crashReporting.email"
  pref("extensions.interposition.enabled", true);
  pref("extensions.interposition.prefetching", true);
  
@@ -5293,8 +5282,8 @@ diff --git a/browser/app/profile/firefox.js b/browser/app/profile/firefox.js
 # User RealDolos <dolos@cock.li>
 # Date 1518541852 -3600
 #      Tue Feb 13 18:10:52 2018 +0100
-# Node ID d8edc1fb708ce42585d681f8c9abf08681a4e97b
-# Parent  6cf051dff8e56936e32916242165a210a588f22e
+# Node ID bec55ce9ba9974df0785a42e8ba4ef5e63fb4f6f
+# Parent  5df092b49ad3d17ef66fc90024752ab033268682
 Put back nsILocalFile
 
 diff --git a/xpcom/io/moz.build b/xpcom/io/moz.build
@@ -5532,14 +5521,14 @@ diff --git a/xpcom/io/nsLocalFileWin.h b/xpcom/io/nsLocalFileWin.h
 # User RealDolos <dolos@cock.li>
 # Date 1517496982 -3600
 #      Thu Feb 01 15:56:22 2018 +0100
-# Node ID 70e62dc9aba55c6dd5bde65d5bf87f92f8705a0b
-# Parent  d8edc1fb708ce42585d681f8c9abf08681a4e97b
+# Node ID 35e90aef7f56dea780170734d4d6f944f4c816ae
+# Parent  bec55ce9ba9974df0785a42e8ba4ef5e63fb4f6f
 Allow more "old" add-ons
 
 diff --git a/browser/app/profile/firefox.js b/browser/app/profile/firefox.js
 --- a/browser/app/profile/firefox.js
 +++ b/browser/app/profile/firefox.js
-@@ -1573,17 +1573,17 @@ pref("browser.tabs.crashReporting.emailM
+@@ -1579,17 +1579,17 @@ pref("browser.tabs.crashReporting.emailM
  pref("browser.tabs.crashReporting.email", "");
  
  // Enable e10s add-on interposition by default.
@@ -5584,8 +5573,8 @@ diff --git a/toolkit/mozapps/extensions/internal/XPIInstall.jsm b/toolkit/mozapp
 # User RealDolos <dolos@cock.li>
 # Date 1517563916 -3600
 #      Fri Feb 02 10:31:56 2018 +0100
-# Node ID 3648860806f9c4f3167b24b0bec7fc0b3a5bad9a
-# Parent  70e62dc9aba55c6dd5bde65d5bf87f92f8705a0b
+# Node ID 6d273efe8435c8e9469b221c3ee406efca4078a8
+# Parent  35e90aef7f56dea780170734d4d6f944f4c816ae
 Remove "feature" bloat such as pocket
 
 diff --git a/browser/extensions/moz.build b/browser/extensions/moz.build
@@ -5649,7 +5638,7 @@ diff --git a/browser/locales/Makefile.in b/browser/locales/Makefile.in
  	@$(MAKE) -C ../../devtools/shim/locales AB_CD=$* XPI_NAME=locale-$* XPI_ROOT_APPID='$(XPI_ROOT_APPID)'
  	@$(MAKE) -B searchplugins AB_CD=$* XPI_NAME=locale-$*
  	@$(MAKE) libs AB_CD=$* XPI_NAME=locale-$* PREF_DIR=$(PREF_DIR)
- 	@$(MAKE) multilocale.json-$* AB_CD=$* XPI_NAME=locale-$*
+ 	@$(MAKE) multilocale.txt-$* AB_CD=$* XPI_NAME=locale-$*
  	@$(MAKE) -C $(DEPTH)/$(MOZ_BRANDING_DIRECTORY)/locales AB_CD=$* XPI_NAME=locale-$*
  
  chrome-%: AB_CD=$*
@@ -5685,8 +5674,8 @@ diff --git a/browser/locales/Makefile.in b/browser/locales/Makefile.in
 # User RealDolos <dolos@cock.li>
 # Date 1518019820 -3600
 #      Wed Feb 07 17:10:20 2018 +0100
-# Node ID 41a4ca697e25e41a5ce7258fdc3b2e879558ce7d
-# Parent  3648860806f9c4f3167b24b0bec7fc0b3a5bad9a
+# Node ID b0c51bee045d888193bad765f9bf757edc8080be
+# Parent  6d273efe8435c8e9469b221c3ee406efca4078a8
 Fix menu toolbar button styles
 
 diff --git a/browser/themes/shared/toolbarbuttons.inc.css b/browser/themes/shared/toolbarbuttons.inc.css
@@ -5770,14 +5759,14 @@ diff --git a/browser/themes/shared/toolbarbuttons.inc.css b/browser/themes/share
 # User RealDolos <dolos@cock.li>
 # Date 1518541936 -3600
 #      Tue Feb 13 18:12:16 2018 +0100
-# Node ID a291723497e978cdc4dfc0726626ae0f10af7fad
-# Parent  41a4ca697e25e41a5ce7258fdc3b2e879558ce7d
+# Node ID a1a6b36f1262845135e5a239083444da26c00675
+# Parent  b0c51bee045d888193bad765f9bf757edc8080be
 Be less anal about unsigned stuff
 
 diff --git a/toolkit/mozapps/extensions/internal/XPIProvider.jsm b/toolkit/mozapps/extensions/internal/XPIProvider.jsm
 --- a/toolkit/mozapps/extensions/internal/XPIProvider.jsm
 +++ b/toolkit/mozapps/extensions/internal/XPIProvider.jsm
-@@ -4914,17 +4914,17 @@ AddonInternal.prototype = {
+@@ -4913,17 +4913,17 @@ AddonInternal.prototype = {
          // installed there do not require signing.
          if (Services.appinfo.OS != "Darwin")
            return true;
@@ -5798,52 +5787,10 @@ diff --git a/toolkit/mozapps/extensions/internal/XPIProvider.jsm b/toolkit/mozap
      return (this.userDisabled || this.appDisabled || this.softDisabled);
 # HG changeset patch
 # User RealDolos <dolos@cock.li>
-# Date 1518656626 -3600
-#      Thu Feb 15 02:03:46 2018 +0100
-# Node ID 1bb67abd5accc615a831abe7447e5a4536597f5d
-# Parent  a291723497e978cdc4dfc0726626ae0f10af7fad
-Bug 1438209: tentative fix
-
-diff --git a/ipc/glue/GeckoChildProcessHost.cpp b/ipc/glue/GeckoChildProcessHost.cpp
---- a/ipc/glue/GeckoChildProcessHost.cpp
-+++ b/ipc/glue/GeckoChildProcessHost.cpp
-@@ -1023,23 +1023,25 @@ GeckoChildProcessHost::PerformAsyncLaunc
-   }
- 
-   // Process id
-   cmdLine.AppendLooseValue(UTF8ToWide(pidstring));
- 
-   cmdLine.AppendLooseValue(
-     UTF8ToWide(CrashReporter::GetChildNotificationPipe()));
- 
--  PROsfd h = PR_FileDesc2NativeHandle(crashAnnotationWritePipe);
-+  if (!CrashReporter::IsDummy()) {
-+    PROsfd h = PR_FileDesc2NativeHandle(crashAnnotationWritePipe);
- # if defined(MOZ_SANDBOX)
--  mSandboxBroker.AddHandleToShare(reinterpret_cast<HANDLE>(h));
-+    mSandboxBroker.AddHandleToShare(reinterpret_cast<HANDLE>(h));
- # endif // defined(MOZ_SANDBOX)
--  mLaunchOptions->handles_to_inherit.push_back(reinterpret_cast<HANDLE>(h));
--  std::string hStr = std::to_string(h);
--  cmdLine.AppendLooseValue(UTF8ToWide(hStr));
-+    mLaunchOptions->handles_to_inherit.push_back(reinterpret_cast<HANDLE>(h));
-+    std::string hStr = std::to_string(h);
-+    cmdLine.AppendLooseValue(UTF8ToWide(hStr));
-+  }
- 
-   // Process type
-   cmdLine.AppendLooseValue(UTF8ToWide(childProcessType));
- 
- # if defined(MOZ_SANDBOX)
-   if (shouldSandboxCurrentProcess) {
-     if (mSandboxBroker.LaunchApp(cmdLine.program().c_str(),
-                                  cmdLine.command_line_string().c_str(),
-# HG changeset patch
-# User RealDolos <dolos@cock.li>
 # Date 1518696473 -3600
 #      Thu Feb 15 13:07:53 2018 +0100
-# Node ID b97b302e0ed47571d3f99462ced10704715d352f
-# Parent  1bb67abd5accc615a831abe7447e5a4536597f5d
+# Node ID 02d36488c9e16f0a8180ce2add062c69cd76787e
+# Parent  a1a6b36f1262845135e5a239083444da26c00675
 Setup icon
 
 diff --git a/other-licenses/7zstub/firefox/7zSD.sfx b/other-licenses/7zstub/firefox/7zSD.sfx
@@ -10187,3 +10134,4866 @@ z%D*Rw<0ts>n80zvpCI8(H*wtX3%W_h`Cl;X?681w{%;5nI8L7+Iz=%%?5RC<O5ouq
 z?l*KJpS0N_N;T3<k5Kx@Ee?{ZFEhbryqnedX_Et>+_=>+`9oQbpE3J*{Nt7%4}OZ4
 oACK)gSbuzoLPE*L)4ExYpBPrM@zXZrzgrK(8JqF5HsgH!Kf^b!0{{R3
 
+# HG changeset patch
+# User RealDolos <dolos@cock.li>
+# Date 1519545931 -3600
+#      Sun Feb 25 09:05:31 2018 +0100
+# Node ID ba6942e7321076fcdaf9cd95d75a1f070eebce57
+# Parent  02d36488c9e16f0a8180ce2add062c69cd76787e
+Readd nsIXMLHttpRequest
+
+Backed out changeset 2c9c1b0ef8c3
+
+diff --git a/browser/installer/package-manifest.in b/browser/installer/package-manifest.in
+--- a/browser/installer/package-manifest.in
++++ b/browser/installer/package-manifest.in
+@@ -216,16 +216,17 @@
+ @RESPATH@/components/dom_range.xpt
+ @RESPATH@/components/dom_security.xpt
+ @RESPATH@/components/dom_sidebar.xpt
+ @RESPATH@/components/dom_storage.xpt
+ #ifdef MOZ_WEBSPEECH
+ @RESPATH@/components/dom_webspeechrecognition.xpt
+ #endif
+ @RESPATH@/components/dom_workers.xpt
++@RESPATH@/components/dom_xhr.xpt
+ @RESPATH@/components/dom_xul.xpt
+ @RESPATH@/components/dom_presentation.xpt
+ @RESPATH@/components/downloads.xpt
+ @RESPATH@/components/editor.xpt
+ @RESPATH@/components/enterprisepolicies.xpt
+ @RESPATH@/components/extensions.xpt
+ @RESPATH@/components/exthandler.xpt
+ @RESPATH@/components/fastfind.xpt
+diff --git a/dom/base/test/gtest/TestNativeXMLHttpRequest.cpp b/dom/base/test/gtest/TestNativeXMLHttpRequest.cpp
+new file mode 100644
+--- /dev/null
++++ b/dom/base/test/gtest/TestNativeXMLHttpRequest.cpp
+@@ -0,0 +1,50 @@
++/* -*- Mode: C++; tab-width: 8; indent-tabs-mode: nil; c-basic-offset: 2 -*- */
++/* vim: set ts=8 sts=2 et sw=2 tw=80: */
++/* This Source Code Form is subject to the terms of the Mozilla Public
++ * License, v. 2.0. If a copy of the MPL was not distributed with this
++ * file, You can obtain one at http://mozilla.org/MPL/2.0/. */
++
++#include "gtest/gtest.h"
++
++#include "nsContentUtils.h"
++#include "nsIDOMDocument.h"
++#include "nsIPrincipal.h"
++#include "nsIScriptSecurityManager.h"
++#include "nsIXMLHttpRequest.h"
++
++#define TEST_URL_PREFIX  "data:text/xml,"
++#define TEST_URL_CONTENT "<foo><bar></bar></foo>"
++#define TEST_URL         TEST_URL_PREFIX TEST_URL_CONTENT
++
++TEST(NativeXMLHttpRequest, Test)
++{
++  nsresult rv;
++
++  nsCOMPtr<nsIXMLHttpRequest> xhr =
++    do_CreateInstance(NS_XMLHTTPREQUEST_CONTRACTID, &rv);
++  ASSERT_TRUE(NS_SUCCEEDED(rv)) << "Couldn't create nsIXMLHttpRequest instance";
++
++  NS_NAMED_LITERAL_CSTRING(getString, "GET");
++  NS_NAMED_LITERAL_CSTRING(testURL, TEST_URL);
++  const nsAString& empty = EmptyString();
++
++  rv = xhr->Init(nsContentUtils::GetSystemPrincipal(), nullptr, nullptr, nullptr);
++  ASSERT_TRUE(NS_SUCCEEDED(rv)) << "Couldn't initialize the XHR";
++
++  rv = xhr->Open(getString, testURL, false, empty, empty);
++  ASSERT_TRUE(NS_SUCCEEDED(rv)) << "Open failed";
++
++  rv = xhr->Send(nullptr);
++  ASSERT_TRUE(NS_SUCCEEDED(rv)) << "Send failed";
++
++  nsAutoString response;
++  rv = xhr->GetResponseText(response);
++  ASSERT_TRUE(NS_SUCCEEDED(rv)) << "GetResponse failed";
++  ASSERT_TRUE(response.EqualsLiteral(TEST_URL_CONTENT)) <<
++    "Response text does not match";
++
++  nsCOMPtr<nsIDOMDocument> dom;
++  rv = xhr->GetResponseXML(getter_AddRefs(dom));
++  ASSERT_TRUE(NS_SUCCEEDED(rv)) << "GetResponseXML failed";
++  ASSERT_TRUE(dom) << "No DOM document constructed";
++}
+diff --git a/dom/base/test/gtest/moz.build b/dom/base/test/gtest/moz.build
+--- a/dom/base/test/gtest/moz.build
++++ b/dom/base/test/gtest/moz.build
+@@ -1,15 +1,16 @@
+ # -*- Mode: python; indent-tabs-mode: nil; tab-width: 40 -*-
+ # vim: set filetype=python:
+ # This Source Code Form is subject to the terms of the Mozilla Public
+ # License, v. 2.0. If a copy of the MPL was not distributed with this
+ # file, you can obtain one at http://mozilla.org/MPL/2.0/.
+ 
+ UNIFIED_SOURCES += [
++    'TestNativeXMLHttpRequest.cpp',
+     'TestParserDialogOptions.cpp',
+     'TestPlainTextSerializer.cpp',
+     'TestXPathGenerator.cpp',
+ ]
+ 
+ LOCAL_INCLUDES += [
+     '/dom/base'
+ ]
+diff --git a/dom/fetch/BodyExtractor.cpp b/dom/fetch/BodyExtractor.cpp
+--- a/dom/fetch/BodyExtractor.cpp
++++ b/dom/fetch/BodyExtractor.cpp
+@@ -163,16 +163,26 @@ BodyExtractor<nsIInputStream>::GetAsStre
+   NS_ENSURE_SUCCESS(rv, rv);
+ 
+   nsCOMPtr<nsIInputStream> stream(mBody);
+   stream.forget(aResult);
+   return NS_OK;
+ }
+ 
+ template<> nsresult
++BodyExtractor<nsIXHRSendable>::GetAsStream(nsIInputStream** aResult,
++                                           uint64_t* aContentLength,
++                                           nsACString& aContentTypeWithCharset,
++                                           nsACString& aCharset) const
++{
++  return mBody->GetSendInfo(aResult, aContentLength, aContentTypeWithCharset,
++                            aCharset);
++}
++
++template<> nsresult
+ BodyExtractor<const Blob>::GetAsStream(nsIInputStream** aResult,
+                                        uint64_t* aContentLength,
+                                        nsACString& aContentTypeWithCharset,
+                                        nsACString& aCharset) const
+ {
+   return mBody->GetSendInfo(aResult, aContentLength, aContentTypeWithCharset,
+                             aCharset);
+ }
+diff --git a/dom/filesystem/FileSystemTaskBase.h b/dom/filesystem/FileSystemTaskBase.h
+--- a/dom/filesystem/FileSystemTaskBase.h
++++ b/dom/filesystem/FileSystemTaskBase.h
+@@ -5,17 +5,16 @@
+  * You can obtain one at http://mozilla.org/MPL/2.0/. */
+ 
+ #ifndef mozilla_dom_FileSystemTaskBase_h
+ #define mozilla_dom_FileSystemTaskBase_h
+ 
+ #include "mozilla/ErrorResult.h"
+ #include "mozilla/dom/FileSystemRequestParent.h"
+ #include "mozilla/dom/PFileSystemRequestChild.h"
+-#include "nsIGlobalObject.h"
+ #include "nsThreadUtils.h"
+ 
+ namespace mozilla {
+ namespace dom {
+ 
+ class BlobImpl;
+ class FileSystemBase;
+ class FileSystemParams;
+diff --git a/dom/xhr/XMLHttpRequest.h b/dom/xhr/XMLHttpRequest.h
+--- a/dom/xhr/XMLHttpRequest.h
++++ b/dom/xhr/XMLHttpRequest.h
+@@ -5,16 +5,17 @@
+  * You can obtain one at http://mozilla.org/MPL/2.0/. */
+ 
+ #ifndef mozilla_dom_XMLHttpRequest_h
+ #define mozilla_dom_XMLHttpRequest_h
+ 
+ #include "mozilla/Attributes.h"
+ #include "mozilla/dom/XMLHttpRequestEventTarget.h"
+ #include "mozilla/dom/XMLHttpRequestBinding.h"
++#include "nsIXMLHttpRequest.h"
+ 
+ class nsIJSID;
+ 
+ namespace mozilla {
+ namespace dom {
+ 
+ class Blob;
+ class DOMString;
+diff --git a/dom/xhr/XMLHttpRequestEventTarget.cpp b/dom/xhr/XMLHttpRequestEventTarget.cpp
+--- a/dom/xhr/XMLHttpRequestEventTarget.cpp
++++ b/dom/xhr/XMLHttpRequestEventTarget.cpp
+@@ -15,16 +15,17 @@ NS_IMPL_CYCLE_COLLECTION_TRAVERSE_BEGIN_
+                                                   DOMEventTargetHelper)
+ NS_IMPL_CYCLE_COLLECTION_TRAVERSE_END
+ 
+ NS_IMPL_CYCLE_COLLECTION_UNLINK_BEGIN_INHERITED(XMLHttpRequestEventTarget,
+                                                 DOMEventTargetHelper)
+ NS_IMPL_CYCLE_COLLECTION_UNLINK_END
+ 
+ NS_INTERFACE_MAP_BEGIN_CYCLE_COLLECTION(XMLHttpRequestEventTarget)
++  NS_INTERFACE_MAP_ENTRY(nsIXMLHttpRequestEventTarget)
+ NS_INTERFACE_MAP_END_INHERITING(DOMEventTargetHelper)
+ 
+ NS_IMPL_ADDREF_INHERITED(XMLHttpRequestEventTarget, DOMEventTargetHelper)
+ NS_IMPL_RELEASE_INHERITED(XMLHttpRequestEventTarget, DOMEventTargetHelper)
+ 
+ void
+ XMLHttpRequestEventTarget::DisconnectFromOwner()
+ {
+diff --git a/dom/xhr/XMLHttpRequestEventTarget.h b/dom/xhr/XMLHttpRequestEventTarget.h
+--- a/dom/xhr/XMLHttpRequestEventTarget.h
++++ b/dom/xhr/XMLHttpRequestEventTarget.h
+@@ -3,36 +3,39 @@
+ /* This Source Code Form is subject to the terms of the Mozilla Public
+  * License, v. 2.0. If a copy of the MPL was not distributed with this file,
+  * You can obtain one at http://mozilla.org/MPL/2.0/. */
+ 
+ #ifndef mozilla_dom_XMLHttpRequestEventTarget_h
+ #define mozilla_dom_XMLHttpRequestEventTarget_h
+ 
+ #include "mozilla/DOMEventTargetHelper.h"
++#include "nsIXMLHttpRequest.h"
+ 
+ namespace mozilla {
+ namespace dom {
+ 
+-class XMLHttpRequestEventTarget : public DOMEventTargetHelper
++class XMLHttpRequestEventTarget : public DOMEventTargetHelper,
++                                  public nsIXMLHttpRequestEventTarget
+ {
+ protected:
+   explicit XMLHttpRequestEventTarget(DOMEventTargetHelper* aOwner)
+     : DOMEventTargetHelper(aOwner)
+   {}
+ 
+   XMLHttpRequestEventTarget()
+   {}
+ 
+   virtual ~XMLHttpRequestEventTarget() {}
+ 
+ public:
+   NS_DECL_ISUPPORTS_INHERITED
+   NS_DECL_CYCLE_COLLECTION_CLASS_INHERITED(XMLHttpRequestEventTarget,
+                                            DOMEventTargetHelper)
++  NS_DECL_NSIXMLHTTPREQUESTEVENTTARGET
+   NS_REALLY_FORWARD_NSIDOMEVENTTARGET(DOMEventTargetHelper)
+ 
+   IMPL_EVENT_HANDLER(loadstart)
+   IMPL_EVENT_HANDLER(progress)
+   IMPL_EVENT_HANDLER(abort)
+   IMPL_EVENT_HANDLER(error)
+   IMPL_EVENT_HANDLER(load)
+   IMPL_EVENT_HANDLER(timeout)
+diff --git a/dom/xhr/XMLHttpRequestMainThread.cpp b/dom/xhr/XMLHttpRequestMainThread.cpp
+--- a/dom/xhr/XMLHttpRequestMainThread.cpp
++++ b/dom/xhr/XMLHttpRequestMainThread.cpp
+@@ -244,19 +244,39 @@ XMLHttpRequestMainThread::~XMLHttpReques
+   mFlagSyncLooping = false;
+ 
+   mResultJSON.setUndefined();
+   mResultArrayBuffer = nullptr;
+   mozilla::DropJSObjects(this);
+ }
+ 
+ /**
++ * This Init method is called from the factory constructor.
++ */
++nsresult
++XMLHttpRequestMainThread::Init()
++{
++  nsIScriptSecurityManager* secMan = nsContentUtils::GetSecurityManager();
++  nsCOMPtr<nsIPrincipal> subjectPrincipal;
++  if (secMan) {
++    secMan->GetSystemPrincipal(getter_AddRefs(subjectPrincipal));
++  }
++  NS_ENSURE_STATE(subjectPrincipal);
++
++  // Instead of grabbing some random global from the context stack,
++  // let's use the default one (junk scope) for now.
++  // We should move away from this Init...
++  Construct(subjectPrincipal, xpc::NativeGlobal(xpc::PrivilegedJunkScope()));
++  return NS_OK;
++}
++
++/**
+  * This Init method should only be called by C++ consumers.
+  */
+-nsresult
++NS_IMETHODIMP
+ XMLHttpRequestMainThread::Init(nsIPrincipal* aPrincipal,
+                                nsIGlobalObject* aGlobalObject,
+                                nsIURI* aBaseURI,
+                                nsILoadGroup* aLoadGroup)
+ {
+   NS_ENSURE_ARG_POINTER(aPrincipal);
+   Construct(aPrincipal, aGlobalObject, aBaseURI, aLoadGroup);
+   return NS_OK;
+@@ -381,16 +401,17 @@ NS_IMPL_CYCLE_COLLECTION_TRACE_END
+ bool
+ XMLHttpRequestMainThread::IsCertainlyAliveForCC() const
+ {
+   return mWaitingForOnStopRequest;
+ }
+ 
+ // QueryInterface implementation for XMLHttpRequestMainThread
+ NS_INTERFACE_MAP_BEGIN_CYCLE_COLLECTION(XMLHttpRequestMainThread)
++  NS_INTERFACE_MAP_ENTRY(nsIXMLHttpRequest)
+   NS_INTERFACE_MAP_ENTRY(nsIRequestObserver)
+   NS_INTERFACE_MAP_ENTRY(nsIStreamListener)
+   NS_INTERFACE_MAP_ENTRY(nsIChannelEventSink)
+   NS_INTERFACE_MAP_ENTRY(nsIProgressEventSink)
+   NS_INTERFACE_MAP_ENTRY(nsIInterfaceRequestor)
+   NS_INTERFACE_MAP_ENTRY(nsITimerCallback)
+   NS_INTERFACE_MAP_ENTRY(nsINamed)
+   NS_INTERFACE_MAP_ENTRY(nsISizeOfEventTarget)
+@@ -428,29 +449,55 @@ XMLHttpRequestMainThread::SizeOfEventTar
+ 
+   return n;
+ 
+   // Measurement of the following members may be added later if DMD finds it is
+   // worthwhile:
+   // - lots
+ }
+ 
++NS_IMETHODIMP
++XMLHttpRequestMainThread::GetChannel(nsIChannel **aChannel)
++{
++  NS_ENSURE_ARG_POINTER(aChannel);
++  NS_IF_ADDREF(*aChannel = mChannel);
++
++  return NS_OK;
++}
++
+ static void LogMessage(const char* aWarning, nsPIDOMWindowInner* aWindow,
+                        const char16_t** aParams=nullptr, uint32_t aParamCount=0)
+ {
+   nsCOMPtr<nsIDocument> doc;
+   if (aWindow) {
+     doc = aWindow->GetExtantDoc();
+   }
+   nsContentUtils::ReportToConsole(nsIScriptError::warningFlag,
+                                   NS_LITERAL_CSTRING("DOM"), doc,
+                                   nsContentUtils::eDOM_PROPERTIES,
+                                   aWarning, aParams, aParamCount);
+ }
+ 
++NS_IMETHODIMP
++XMLHttpRequestMainThread::GetResponseXML(nsIDOMDocument **aResponseXML)
++{
++  ErrorResult rv;
++  nsIDocument* responseXML = GetResponseXML(rv);
++  if (rv.Failed()) {
++    return rv.StealNSResult();
++  }
++
++  if (!responseXML) {
++    *aResponseXML = nullptr;
++    return NS_OK;
++  }
++
++  return CallQueryInterface(responseXML, aResponseXML);
++}
++
+ nsIDocument*
+ XMLHttpRequestMainThread::GetResponseXML(ErrorResult& aRv)
+ {
+   if (mResponseType != XMLHttpRequestResponseType::_empty &&
+       mResponseType != XMLHttpRequestResponseType::Document) {
+     aRv.Throw(NS_ERROR_DOM_INVALID_STATE_XHR_HAS_WRONG_RESPONSETYPE_FOR_RESPONSEXML);
+     return nullptr;
+   }
+@@ -539,16 +586,30 @@ XMLHttpRequestMainThread::AppendToRespon
+   MOZ_ASSERT(result == kInputEmpty);
+   MOZ_ASSERT(read == aSrcBufferLen);
+   MOZ_ASSERT(written <= destBufferLen.value());
+   Unused << hadErrors;
+   helper.AddLength(written);
+   return NS_OK;
+ }
+ 
++NS_IMETHODIMP
++XMLHttpRequestMainThread::GetResponseText(nsAString& aResponseText)
++{
++  ErrorResult rv;
++  DOMString str;
++  GetResponseText(str, rv);
++  if (NS_WARN_IF(rv.Failed())) {
++    return rv.StealNSResult();
++  }
++
++  str.ToString(aResponseText);
++  return NS_OK;
++}
++
+ void
+ XMLHttpRequestMainThread::GetResponseText(DOMString& aResponseText,
+                                           ErrorResult& aRv)
+ {
+   XMLHttpRequestStringSnapshot snapshot;
+   GetResponseText(snapshot, aRv);
+   if (aRv.Failed()) {
+     return;
+@@ -630,16 +691,40 @@ XMLHttpRequestMainThread::CreateResponse
+   if (!JS_ParseJSON(aCx, string.BeginReading(), string.Length(), &value)) {
+     return NS_ERROR_FAILURE;
+   }
+ 
+   mResultJSON = value;
+   return NS_OK;
+ }
+ 
++NS_IMETHODIMP XMLHttpRequestMainThread::GetResponseType(nsAString& aResponseType)
++{
++  MOZ_ASSERT(mResponseType < XMLHttpRequestResponseType::EndGuard_);
++  const EnumEntry& entry =
++    XMLHttpRequestResponseTypeValues::strings[static_cast<uint32_t>(mResponseType)];
++  aResponseType.AssignASCII(entry.value, entry.length);
++  return NS_OK;
++}
++
++NS_IMETHODIMP XMLHttpRequestMainThread::SetResponseType(const nsAString& aResponseType)
++{
++  uint32_t i = 0;
++  for (const EnumEntry* entry = XMLHttpRequestResponseTypeValues::strings;
++       entry->value; ++entry, ++i) {
++    if (aResponseType.EqualsASCII(entry->value, entry->length)) {
++      ErrorResult rv;
++      SetResponseType(static_cast<XMLHttpRequestResponseType>(i), rv);
++      return rv.StealNSResult();
++    }
++  }
++
++  return NS_OK;
++}
++
+ void
+ XMLHttpRequestMainThread::SetResponseType(XMLHttpRequestResponseType aResponseType,
+                                           ErrorResult& aRv)
+ {
+   NOT_CALLABLE_IN_SYNC_SEND_RV
+ 
+   if (mState == XMLHttpRequestBinding::LOADING ||
+       mState == XMLHttpRequestBinding::DONE) {
+@@ -665,16 +750,24 @@ XMLHttpRequestMainThread::SetResponseTyp
+   if (aResponseType == XMLHttpRequestResponseType::Moz_chunked_arraybuffer) {
+     Telemetry::Accumulate(Telemetry::MOZ_CHUNKED_ARRAYBUFFER_IN_XHR, 1);
+   }
+ 
+   // Set the responseType attribute's value to the given value.
+   mResponseType = aResponseType;
+ }
+ 
++NS_IMETHODIMP
++XMLHttpRequestMainThread::GetResponse(JSContext *aCx, JS::MutableHandle<JS::Value> aResult)
++{
++  ErrorResult rv;
++  GetResponse(aCx, aResult, rv);
++  return rv.StealNSResult();
++}
++
+ void
+ XMLHttpRequestMainThread::GetResponse(JSContext* aCx,
+                                       JS::MutableHandle<JS::Value> aResponse,
+                                       ErrorResult& aRv)
+ {
+   switch (mResponseType) {
+   case XMLHttpRequestResponseType::_empty:
+   case XMLHttpRequestResponseType::Text:
+@@ -818,16 +911,24 @@ XMLHttpRequestMainThread::GetResponseURL
+     return;
+   }
+ 
+   nsAutoCString temp;
+   responseUrl->GetSpecIgnoringRef(temp);
+   CopyUTF8toUTF16(temp, aUrl);
+ }
+ 
++NS_IMETHODIMP
++XMLHttpRequestMainThread::GetStatus(uint32_t *aStatus)
++{
++  ErrorResult rv;
++  *aStatus = GetStatus(rv);
++  return rv.StealNSResult();
++}
++
+ uint32_t
+ XMLHttpRequestMainThread::GetStatus(ErrorResult& aRv)
+ {
+   // Make sure we don't leak status information from denied cross-site
+   // requests.
+   if (IsDeniedCrossSiteCORSRequest()) {
+     return 0;
+   }
+@@ -864,16 +965,24 @@ XMLHttpRequestMainThread::GetStatus(Erro
+   nsresult rv = httpChannel->GetResponseStatus(&status);
+   if (NS_FAILED(rv)) {
+     status = 0;
+   }
+ 
+   return status;
+ }
+ 
++NS_IMETHODIMP
++XMLHttpRequestMainThread::GetStatusText(nsACString& aOut)
++{
++  ErrorResult rv;
++  GetStatusText(aOut, rv);
++  return rv.StealNSResult();
++}
++
+ void
+ XMLHttpRequestMainThread::GetStatusText(nsACString& aStatusText,
+                                         ErrorResult& aRv)
+ {
+   // Return an empty status text on all error loads.
+   aStatusText.Truncate();
+ 
+   // Make sure we don't leak status information from denied cross-site
+@@ -1036,16 +1145,23 @@ XMLHttpRequestMainThread::AbortInternal(
+   // Step 3
+   if (mState == XMLHttpRequestBinding::DONE) {
+     ChangeState(XMLHttpRequestBinding::UNSENT, false); // no ReadystateChange event
+   }
+ 
+   mFlagSyncLooping = false;
+ }
+ 
++NS_IMETHODIMP
++XMLHttpRequestMainThread::SlowAbort()
++{
++  Abort();
++  return NS_OK;
++}
++
+ /*Method that checks if it is safe to expose a header value to the client.
+ It is used to check what headers are exposed for CORS requests.*/
+ bool
+ XMLHttpRequestMainThread::IsSafeHeader(const nsACString& aHeader,
+                                        NotNull<nsIHttpChannel*> aHttpChannel) const
+ {
+   // See bug #380418. Hide "Set-Cookie" headers from non-chrome scripts.
+   if (!IsSystemXHR() && nsContentUtils::IsForbiddenResponseHeader(aHeader)) {
+@@ -1093,16 +1209,24 @@ XMLHttpRequestMainThread::IsSafeHeader(c
+     }
+     if (aHeader.Equals(token, nsCaseInsensitiveCStringComparator())) {
+       isSafe = true;
+     }
+   }
+   return isSafe;
+ }
+ 
++NS_IMETHODIMP
++XMLHttpRequestMainThread::GetAllResponseHeaders(nsACString& aOut)
++{
++  ErrorResult rv;
++  GetAllResponseHeaders(aOut, rv);
++  return rv.StealNSResult();
++}
++
+ void
+ XMLHttpRequestMainThread::GetAllResponseHeaders(nsACString& aResponseHeaders,
+                                                 ErrorResult& aRv)
+ {
+   NOT_CALLABLE_IN_SYNC_SEND_RV
+ 
+   aResponseHeaders.Truncate();
+ 
+@@ -1152,16 +1276,25 @@ XMLHttpRequestMainThread::GetAllResponse
+     if (NS_SUCCEEDED(mChannel->GetContentLength(&length))) {
+       aResponseHeaders.AppendLiteral("Content-Length: ");
+       aResponseHeaders.AppendInt(length);
+       aResponseHeaders.AppendLiteral("\r\n");
+     }
+   }
+ }
+ 
++NS_IMETHODIMP
++XMLHttpRequestMainThread::GetResponseHeader(const nsACString& aHeader,
++                                            nsACString& aResult)
++{
++  ErrorResult rv;
++  GetResponseHeader(aHeader, aResult, rv);
++  return rv.StealNSResult();
++}
++
+ void
+ XMLHttpRequestMainThread::GetResponseHeader(const nsACString& header,
+                                             nsACString& _retval, ErrorResult& aRv)
+ {
+   NOT_CALLABLE_IN_SYNC_SEND_RV
+ 
+   _retval.SetIsVoid(true);
+ 
+@@ -1380,16 +1513,25 @@ XMLHttpRequestMainThread::IsSystemXHR() 
+ 
+ bool
+ XMLHttpRequestMainThread::InUploadPhase() const
+ {
+   // We're in the upload phase while our state is OPENED.
+   return mState == XMLHttpRequestBinding::OPENED;
+ }
+ 
++NS_IMETHODIMP
++XMLHttpRequestMainThread::Open(const nsACString& aMethod, const nsACString& aUrl,
++                               bool aAsync, const nsAString& aUsername,
++                               const nsAString& aPassword, uint8_t optional_argc)
++{
++  return Open(aMethod, aUrl, optional_argc > 0 ? aAsync : true,
++              aUsername, aPassword);
++}
++
+ // This case is hit when the async parameter is outright omitted, which
+ // should set it to true (and the username and password to null).
+ void
+ XMLHttpRequestMainThread::Open(const nsACString& aMethod, const nsAString& aUrl,
+                                ErrorResult& aRv)
+ {
+   Open(aMethod, aUrl, true, VoidString(), VoidString(), aRv);
+ }
+@@ -2672,16 +2814,96 @@ XMLHttpRequestMainThread::InitiateFetch(
+       mState = XMLHttpRequestBinding::DONE;
+       return NS_ERROR_DOM_NETWORK_ERR;
+     }
+   }
+ 
+   return NS_OK;
+ }
+ 
++NS_IMETHODIMP
++XMLHttpRequestMainThread::Send(nsIVariant* aVariant)
++{
++  if (!aVariant) {
++    return SendInternal(nullptr);
++  }
++
++  uint16_t dataType;
++  nsresult rv = aVariant->GetDataType(&dataType);
++  NS_ENSURE_SUCCESS(rv, rv);
++
++  if (dataType == nsIDataType::VTYPE_INTERFACE ||
++      dataType == nsIDataType::VTYPE_INTERFACE_IS) {
++    nsCOMPtr<nsISupports> supports;
++    nsID *iid;
++    rv = aVariant->GetAsInterface(&iid, getter_AddRefs(supports));
++    NS_ENSURE_SUCCESS(rv, rv);
++
++    free(iid);
++
++    // document?
++    nsCOMPtr<nsIDocument> doc = do_QueryInterface(supports);
++    if (doc) {
++      BodyExtractor<nsIDocument> body(doc);
++      return SendInternal(&body);
++    }
++
++    // nsISupportsString?
++    nsCOMPtr<nsISupportsString> wstr = do_QueryInterface(supports);
++    if (wstr) {
++      nsAutoString string;
++      wstr->GetData(string);
++      BodyExtractor<const nsAString> body(&string);
++      return SendInternal(&body);
++    }
++
++    // nsIInputStream?
++    nsCOMPtr<nsIInputStream> stream = do_QueryInterface(supports);
++    if (stream) {
++      BodyExtractor<nsIInputStream> body(stream);
++      return SendInternal(&body);
++    }
++
++    // nsIXHRSendable?
++    nsCOMPtr<nsIXHRSendable> sendable = do_QueryInterface(supports);
++    if (sendable) {
++      BodyExtractor<nsIXHRSendable> body(sendable);
++      return SendInternal(&body);
++    }
++
++    // ArrayBuffer?
++    JS::RootingContext* rootingCx = RootingCx();
++    JS::Rooted<JS::Value> realVal(rootingCx);
++
++    nsresult rv = aVariant->GetAsJSVal(&realVal);
++    if (NS_SUCCEEDED(rv) && !realVal.isPrimitive()) {
++      JS::Rooted<JSObject*> obj(rootingCx, realVal.toObjectOrNull());
++      RootedSpiderMonkeyInterface<ArrayBuffer> buf(rootingCx);
++      if (buf.Init(obj)) {
++        BodyExtractor<const ArrayBuffer> body(&buf);
++        return SendInternal(&body);
++      }
++    }
++  } else if (dataType == nsIDataType::VTYPE_VOID ||
++           dataType == nsIDataType::VTYPE_EMPTY) {
++    return SendInternal(nullptr);
++  }
++
++  char16_t* data = nullptr;
++  uint32_t len = 0;
++  rv = aVariant->GetAsWStringWithSize(&len, &data);
++  NS_ENSURE_SUCCESS(rv, rv);
++
++  nsString string;
++  string.Adopt(data, len);
++
++  BodyExtractor<const nsAString> body(&string);
++  return SendInternal(&body);
++}
++
+ void
+ XMLHttpRequestMainThread::UnsuppressEventHandlingAndResume()
+ {
+   MOZ_ASSERT(NS_IsMainThread());
+   MOZ_ASSERT(mFlagSynchronous);
+ 
+   if (mSuspendedDoc) {
+     mSuspendedDoc->UnsuppressEventHandlingAndFireEvents(true);
+@@ -2987,67 +3209,80 @@ XMLHttpRequestMainThread::IsLowercaseRes
+                                  false);
+     sLowercaseResponseHeaderAdded = true;
+   }
+ 
+   return sIsLowercaseResponseHeaderEnabled;
+ }
+ 
+ // http://dvcs.w3.org/hg/xhr/raw-file/tip/Overview.html#dom-xmlhttprequest-setrequestheader
+-void
++NS_IMETHODIMP
+ XMLHttpRequestMainThread::SetRequestHeader(const nsACString& aName,
+-                                           const nsACString& aValue,
+-                                           ErrorResult& aRv)
++                                           const nsACString& aValue)
+ {
+-  NOT_CALLABLE_IN_SYNC_SEND_RV
++  NOT_CALLABLE_IN_SYNC_SEND
+ 
+   // Step 1
+   if (mState != XMLHttpRequestBinding::OPENED) {
+-    aRv.Throw(NS_ERROR_DOM_INVALID_STATE_XHR_MUST_BE_OPENED);
+-    return;
++    return NS_ERROR_DOM_INVALID_STATE_XHR_MUST_BE_OPENED;
+   }
+ 
+   // Step 2
+   if (mFlagSend) {
+-    aRv.Throw(NS_ERROR_DOM_INVALID_STATE_XHR_MUST_NOT_BE_SENDING);
+-    return;
++    return NS_ERROR_DOM_INVALID_STATE_XHR_MUST_NOT_BE_SENDING;
+   }
+ 
+   // Step 3
+   nsAutoCString value;
+   NS_TrimHTTPWhitespace(aValue, value);
+ 
+   // Step 4
+   if (!NS_IsValidHTTPToken(aName) || !NS_IsReasonableHTTPHeaderValue(value)) {
+-    aRv.Throw(NS_ERROR_DOM_INVALID_HEADER_NAME);
+-    return;
++    return NS_ERROR_DOM_INVALID_HEADER_NAME;
+   }
+ 
+   // Step 5
+   bool isPrivilegedCaller = IsSystemXHR();
+   bool isForbiddenHeader = nsContentUtils::IsForbiddenRequestHeader(aName);
+   if (!isPrivilegedCaller && isForbiddenHeader) {
+     NS_ConvertUTF8toUTF16 name(aName);
+     const char16_t* params[] = { name.get() };
+     LogMessage("ForbiddenHeaderWarning", GetOwner(), params, ArrayLength(params));
+-    return;
++    return NS_OK;
+   }
+ 
+   // Step 6.1
+   // Skipping for now, as normalizing the case of header names may not be
+   // web-compatible. See bug 1285036.
+ 
+   // Step 6.2-6.3
+   // Gecko-specific: invalid headers can be set by privileged
+   //                 callers, but will not merge.
+   if (isPrivilegedCaller && isForbiddenHeader) {
+     mAuthorRequestHeaders.Set(aName, value);
+   } else {
+     mAuthorRequestHeaders.MergeOrSet(aName, value);
+   }
++
++  return NS_OK;
++}
++
++NS_IMETHODIMP
++XMLHttpRequestMainThread::GetTimeout(uint32_t *aTimeout)
++{
++  *aTimeout = Timeout();
++  return NS_OK;
++}
++
++NS_IMETHODIMP
++XMLHttpRequestMainThread::SetTimeout(uint32_t aTimeout)
++{
++  ErrorResult rv;
++  SetTimeout(aTimeout, rv);
++  return rv.StealNSResult();
+ }
+ 
+ void
+ XMLHttpRequestMainThread::SetTimeout(uint32_t aTimeout, ErrorResult& aRv)
+ {
+   NOT_CALLABLE_IN_SYNC_SEND_RV
+ 
+   if (mFlagSynchronous &&
+@@ -3113,16 +3348,23 @@ XMLHttpRequestMainThread::StartTimeoutTi
+     (uint32_t)((PR_Now() - mRequestSentTime) / PR_USEC_PER_MSEC);
+   mTimeoutTimer->InitWithCallback(
+     this,
+     mTimeoutMilliseconds > elapsed ? mTimeoutMilliseconds - elapsed : 0,
+     nsITimer::TYPE_ONE_SHOT
+   );
+ }
+ 
++NS_IMETHODIMP
++XMLHttpRequestMainThread::GetReadyState(uint16_t *aState)
++{
++  *aState = ReadyState();
++  return NS_OK;
++}
++
+ uint16_t
+ XMLHttpRequestMainThread::ReadyState() const
+ {
+   return mState;
+ }
+ 
+ void
+ XMLHttpRequestMainThread::OverrideMimeType(const nsAString& aMimeType,
+@@ -3135,23 +3377,38 @@ XMLHttpRequestMainThread::OverrideMimeTy
+     ResetResponse();
+     aRv.Throw(NS_ERROR_DOM_INVALID_STATE_XHR_MUST_NOT_BE_LOADING_OR_DONE);
+     return;
+   }
+ 
+   mOverrideMimeType = aMimeType;
+ }
+ 
++NS_IMETHODIMP
++XMLHttpRequestMainThread::SlowOverrideMimeType(const nsAString& aMimeType)
++{
++  ErrorResult aRv;
++  OverrideMimeType(aMimeType, aRv);
++  return aRv.StealNSResult();
++}
++
++NS_IMETHODIMP
++XMLHttpRequestMainThread::GetMozBackgroundRequest(bool *_retval)
++{
++  *_retval = MozBackgroundRequest();
++  return NS_OK;
++}
++
+ bool
+ XMLHttpRequestMainThread::MozBackgroundRequest() const
+ {
+   return mFlagBackgroundRequest;
+ }
+ 
+-nsresult
++NS_IMETHODIMP
+ XMLHttpRequestMainThread::SetMozBackgroundRequest(bool aMozBackgroundRequest)
+ {
+   if (!IsSystemXHR()) {
+     return NS_ERROR_DOM_SECURITY_ERR;
+   }
+ 
+   if (mState != XMLHttpRequestBinding::UNSENT) {
+     // Can't change this while we're in the middle of something.
+@@ -3166,22 +3423,37 @@ XMLHttpRequestMainThread::SetMozBackgrou
+ void
+ XMLHttpRequestMainThread::SetMozBackgroundRequest(bool aMozBackgroundRequest,
+                                                   ErrorResult& aRv)
+ {
+   // No errors for this webIDL method on main-thread.
+   SetMozBackgroundRequest(aMozBackgroundRequest);
+ }
+ 
++NS_IMETHODIMP
++XMLHttpRequestMainThread::GetWithCredentials(bool *_retval)
++{
++  *_retval = WithCredentials();
++  return NS_OK;
++}
++
+ bool
+ XMLHttpRequestMainThread::WithCredentials() const
+ {
+   return mFlagACwithCredentials;
+ }
+ 
++NS_IMETHODIMP
++XMLHttpRequestMainThread::SetWithCredentials(bool aWithCredentials)
++{
++  ErrorResult rv;
++  SetWithCredentials(aWithCredentials, rv);
++  return rv.StealNSResult();
++}
++
+ void
+ XMLHttpRequestMainThread::SetWithCredentials(bool aWithCredentials, ErrorResult& aRv)
+ {
+   NOT_CALLABLE_IN_SYNC_SEND_RV
+ 
+   // Return error if we're already processing a request.  Note that we can't use
+   // ReadyState() here, because it can't differentiate between "opened" and
+   // "sent", so we use mState directly.
+@@ -3423,28 +3695,51 @@ XMLHttpRequestUpload*
+ XMLHttpRequestMainThread::GetUpload(ErrorResult& aRv)
+ {
+   if (!mUpload) {
+     mUpload = new XMLHttpRequestUpload(this);
+   }
+   return mUpload;
+ }
+ 
++NS_IMETHODIMP
++XMLHttpRequestMainThread::GetUpload(nsIXMLHttpRequestUpload** aUpload)
++{
++  ErrorResult rv;
++  RefPtr<XMLHttpRequestUpload> upload = GetUpload(rv);
++  upload.forget(aUpload);
++  return rv.StealNSResult();
++}
++
+ bool
+ XMLHttpRequestMainThread::MozAnon() const
+ {
+   return mIsAnon;
+ }
+ 
++NS_IMETHODIMP
++XMLHttpRequestMainThread::GetMozAnon(bool* aAnon)
++{
++  *aAnon = MozAnon();
++  return NS_OK;
++}
++
+ bool
+ XMLHttpRequestMainThread::MozSystem() const
+ {
+   return IsSystemXHR();
+ }
+ 
++NS_IMETHODIMP
++XMLHttpRequestMainThread::GetMozSystem(bool* aSystem)
++{
++  *aSystem = MozSystem();
++  return NS_OK;
++}
++
+ void
+ XMLHttpRequestMainThread::HandleTimeoutCallback()
+ {
+   if (mState == XMLHttpRequestBinding::DONE) {
+     NS_NOTREACHED("XMLHttpRequestMainThread::HandleTimeoutCallback with completed request");
+     // do nothing!
+     return;
+   }
+diff --git a/dom/xhr/XMLHttpRequestMainThread.h b/dom/xhr/XMLHttpRequestMainThread.h
+--- a/dom/xhr/XMLHttpRequestMainThread.h
++++ b/dom/xhr/XMLHttpRequestMainThread.h
+@@ -4,16 +4,17 @@
+  * License, v. 2.0. If a copy of the MPL was not distributed with this
+  * file, You can obtain one at http://mozilla.org/MPL/2.0/. */
+ 
+ #ifndef mozilla_dom_XMLHttpRequestMainThread_h
+ #define mozilla_dom_XMLHttpRequestMainThread_h
+ 
+ #include <bitset>
+ #include "nsAutoPtr.h"
++#include "nsIXMLHttpRequest.h"
+ #include "nsISupportsUtils.h"
+ #include "nsIURI.h"
+ #include "nsIHttpChannel.h"
+ #include "nsIDocument.h"
+ #include "nsIStreamListener.h"
+ #include "nsIChannelEventSink.h"
+ #include "nsIAsyncVerifyRedirectCallback.h"
+ #include "nsIInterfaceRequestor.h"
+@@ -156,16 +157,17 @@ public:
+   void GetCORSUnsafeHeaders(nsTArray<nsCString>& aArray) const;
+ };
+ 
+ class nsXHRParseEndListener;
+ 
+ // Make sure that any non-DOM interfaces added here are also added to
+ // nsXMLHttpRequestXPCOMifier.
+ class XMLHttpRequestMainThread final : public XMLHttpRequest,
++                                       public nsIXMLHttpRequest,
+                                        public nsIStreamListener,
+                                        public nsIChannelEventSink,
+                                        public nsIProgressEventSink,
+                                        public nsIInterfaceRequestor,
+                                        public nsITimerCallback,
+                                        public nsISizeOfEventTarget,
+                                        public nsINamed,
+                                        public MutableBlobStorageCallback
+@@ -219,16 +221,21 @@ public:
+     mIsSystem = aSystem;
+   }
+ 
+   void SetClientInfoAndController(const ClientInfo& aClientInfo,
+                                   const Maybe<ServiceWorkerDescriptor>& aController);
+ 
+   NS_DECL_ISUPPORTS_INHERITED
+ 
++  // nsIXMLHttpRequest
++  NS_DECL_NSIXMLHTTPREQUEST
++
++  NS_FORWARD_NSIXMLHTTPREQUESTEVENTTARGET(XMLHttpRequestEventTarget::)
++
+   // nsIStreamListener
+   NS_DECL_NSISTREAMLISTENER
+ 
+   // nsIRequestObserver
+   NS_DECL_NSIREQUESTOBSERVER
+ 
+   // nsIChannelEventSink
+   NS_DECL_NSICHANNELEVENTSINK
+@@ -273,17 +280,20 @@ public:
+   Open(const nsACString& aMethod,
+        const nsACString& aUrl,
+        bool aAsync,
+        const nsAString& aUsername,
+        const nsAString& aPassword);
+ 
+   virtual void
+   SetRequestHeader(const nsACString& aName, const nsACString& aValue,
+-                   ErrorResult& aRv) override;
++                   ErrorResult& aRv) override
++  {
++    aRv = SetRequestHeader(aName, aValue);
++  }
+ 
+   virtual uint32_t
+   Timeout() const override
+   {
+     return mTimeoutMilliseconds;
+   }
+ 
+   virtual void
+@@ -413,19 +423,16 @@ public:
+                   ErrorResult& aRv);
+ 
+   virtual nsIDocument*
+   GetResponseXML(ErrorResult& aRv) override;
+ 
+   virtual bool
+   MozBackgroundRequest() const override;
+ 
+-  nsresult
+-  SetMozBackgroundRequest(bool aMozBackgroundRequest);
+-
+   virtual void
+   SetMozBackgroundRequest(bool aMozBackgroundRequest, ErrorResult& aRv) override;
+ 
+   virtual uint16_t
+   ErrorCode() const override
+   {
+     return static_cast<uint16_t>(mErrorLoad);
+   }
+@@ -462,21 +469,22 @@ public:
+ 
+   // This fires a trusted readystatechange event, which is not cancelable and
+   // doesn't bubble.
+   nsresult FireReadystatechangeEvent();
+   void DispatchProgressEvent(DOMEventTargetHelper* aTarget,
+                              const ProgressEventType aType,
+                              int64_t aLoaded, int64_t aTotal);
+ 
+-  // This is called by nsXULTemplateQueryProcessorXML.
+-  nsresult Init(nsIPrincipal* aPrincipal,
+-                nsIGlobalObject* aGlobalObject,
+-                nsIURI* aBaseURI,
+-                nsILoadGroup* aLoadGroup);
++  // This is called by the factory constructor.
++  nsresult Init();
++
++  nsresult init(nsIPrincipal* principal,
++                nsPIDOMWindowInner* globalObject,
++                nsIURI* baseURI);
+ 
+   void SetRequestObserver(nsIRequestObserver* aObserver);
+ 
+   NS_DECL_CYCLE_COLLECTION_SCRIPT_HOLDER_CLASS_INHERITED(XMLHttpRequestMainThread,
+                                                          XMLHttpRequest)
+   virtual bool IsCertainlyAliveForCC() const override;
+ 
+   bool AllowUploadProgress();
+diff --git a/dom/xhr/XMLHttpRequestUpload.cpp b/dom/xhr/XMLHttpRequestUpload.cpp
+--- a/dom/xhr/XMLHttpRequestUpload.cpp
++++ b/dom/xhr/XMLHttpRequestUpload.cpp
+@@ -6,16 +6,17 @@
+ 
+ #include "XMLHttpRequestUpload.h"
+ #include "mozilla/dom/XMLHttpRequestUploadBinding.h"
+ 
+ namespace mozilla {
+ namespace dom {
+ 
+ NS_INTERFACE_MAP_BEGIN(XMLHttpRequestUpload)
++  NS_INTERFACE_MAP_ENTRY(nsIXMLHttpRequestUpload)
+ NS_INTERFACE_MAP_END_INHERITING(XMLHttpRequestEventTarget)
+ 
+ NS_IMPL_ADDREF_INHERITED(XMLHttpRequestUpload, XMLHttpRequestEventTarget)
+ NS_IMPL_RELEASE_INHERITED(XMLHttpRequestUpload, XMLHttpRequestEventTarget)
+ 
+ /* virtual */ JSObject*
+ XMLHttpRequestUpload::WrapObject(JSContext* aCx, JS::Handle<JSObject*> aGivenProto)
+ {
+diff --git a/dom/xhr/XMLHttpRequestUpload.h b/dom/xhr/XMLHttpRequestUpload.h
+--- a/dom/xhr/XMLHttpRequestUpload.h
++++ b/dom/xhr/XMLHttpRequestUpload.h
+@@ -3,32 +3,36 @@
+ /* This Source Code Form is subject to the terms of the Mozilla Public
+  * License, v. 2.0. If a copy of the MPL was not distributed with this file,
+  * You can obtain one at http://mozilla.org/MPL/2.0/. */
+ 
+ #ifndef mozilla_dom_XMLHttpRequestUpload_h
+ #define mozilla_dom_XMLHttpRequestUpload_h
+ 
+ #include "mozilla/dom/XMLHttpRequestEventTarget.h"
++#include "nsIXMLHttpRequest.h"
+ 
+ namespace mozilla {
+ namespace dom {
+ 
+-class XMLHttpRequestUpload final : public XMLHttpRequestEventTarget
++class XMLHttpRequestUpload final : public XMLHttpRequestEventTarget,
++                                   public nsIXMLHttpRequestUpload
+ {
+ public:
+   explicit XMLHttpRequestUpload(DOMEventTargetHelper* aOwner)
+     : XMLHttpRequestEventTarget(aOwner)
+   {}
+ 
+   explicit XMLHttpRequestUpload()
+   {}
+ 
+   NS_DECL_ISUPPORTS_INHERITED
++  NS_FORWARD_NSIXMLHTTPREQUESTEVENTTARGET(XMLHttpRequestEventTarget::)
+   NS_REALLY_FORWARD_NSIDOMEVENTTARGET(XMLHttpRequestEventTarget)
++  NS_DECL_NSIXMLHTTPREQUESTUPLOAD
+ 
+   virtual JSObject*
+   WrapObject(JSContext *cx, JS::Handle<JSObject*> aGivenProto) override;
+ 
+   bool HasListeners()
+   {
+     return mListenerManager && mListenerManager->HasListeners();
+   }
+diff --git a/dom/xhr/moz.build b/dom/xhr/moz.build
+--- a/dom/xhr/moz.build
++++ b/dom/xhr/moz.build
+@@ -2,16 +2,22 @@
+ # vim: set filetype=python:
+ # This Source Code Form is subject to the terms of the Mozilla Public
+ # License, v. 2.0. If a copy of the MPL was not distributed with this
+ # file, You can obtain one at http://mozilla.org/MPL/2.0/.
+ 
+ with Files("**"):
+     BUG_COMPONENT = ("Core", "DOM")
+ 
++XPIDL_SOURCES += [
++    'nsIXMLHttpRequest.idl',
++]
++
++XPIDL_MODULE = 'dom_xhr'
++
+ EXPORTS.mozilla.dom += [
+     'XMLHttpRequest.h',
+     'XMLHttpRequestEventTarget.h',
+     'XMLHttpRequestMainThread.h',
+     'XMLHttpRequestString.h',
+     'XMLHttpRequestUpload.h',
+ ]
+ 
+diff --git a/dom/xhr/nsIXMLHttpRequest.idl b/dom/xhr/nsIXMLHttpRequest.idl
+new file mode 100644
+--- /dev/null
++++ b/dom/xhr/nsIXMLHttpRequest.idl
+@@ -0,0 +1,324 @@
++/* -*- Mode: C++; tab-width: 2; indent-tabs-mode: nil; c-basic-offset: 2 -*- */
++/* This Source Code Form is subject to the terms of the Mozilla Public
++ * License, v. 2.0. If a copy of the MPL was not distributed with this
++ * file, You can obtain one at http://mozilla.org/MPL/2.0/. */
++
++#include "nsIDOMEventTarget.idl"
++
++interface nsIChannel;
++interface nsIDOMDocument;
++interface nsIDOMEventListener;
++interface nsILoadGroup;
++interface nsIPrincipal;
++interface nsIScriptContext;
++interface nsIURI;
++interface nsIVariant;
++interface nsIGlobalObject;
++interface nsIInputStream;
++interface nsIDOMBlob;
++
++[builtinclass, uuid(88e7d2a0-2e5b-4f65-9624-a61e607a9948)]
++interface nsIXMLHttpRequestEventTarget : nsIDOMEventTarget {
++  // event handler attributes
++};
++
++[builtinclass, uuid(d74c4dc4-bc8c-4f5d-b7f1-121a48750abe)]
++interface nsIXMLHttpRequestUpload : nsIXMLHttpRequestEventTarget {
++  // for future use
++};
++
++/**
++ * Mozilla's XMLHttpRequest is modelled after Microsoft's IXMLHttpRequest
++ * object. The goal has been to make Mozilla's version match Microsoft's
++ * version as closely as possible, but there are bound to be some differences.
++ *
++ * In general, Microsoft's documentation for IXMLHttpRequest can be used.
++ * Mozilla's interface definitions provide some additional documentation. The
++ * web page to look at is http://www.mozilla.org/xmlextras/
++ *
++ * Mozilla's XMLHttpRequest object can be created in JavaScript like this:
++ *   new XMLHttpRequest()
++ * compare to Internet Explorer:
++ *   new ActiveXObject("Msxml2.XMLHTTP")
++ *
++ * From native code, the way to set up onload and onerror handlers is a bit
++ * different. Here is a comment from Johnny Stenback <jst@netscape.com>:
++ *
++ *   The mozilla implementation of nsIXMLHttpRequest implements the interface
++ *   nsIDOMEventTarget and that's how you're supported to add event listeners.
++ *   Try something like this:
++ *
++ *   nsCOMPtr<nsIDOMEventTarget> target(do_QueryInterface(myxmlhttpreq));
++ *
++ *   target->AddEventListener(NS_LITERAL_STRING("load"), mylistener,
++ *                            PR_FALSE)
++ *
++ *   where mylistener is your event listener object that implements the
++ *   interface nsIDOMEventListener.
++ *
++ * Conclusion: Do not use event listeners on XMLHttpRequest from C++, unless
++ * you're aware of all the security implications.  And then think twice about
++ * it.
++ */
++[scriptable, uuid(6f54214c-7175-498d-9d2d-0429e38c2869)]
++interface nsIXMLHttpRequest : nsISupports
++{
++  /**
++   * The request uses a channel in order to perform the
++   * request.  This attribute represents the channel used
++   * for the request.  NULL if the channel has not yet been
++   * created.
++   *
++   * Mozilla only. Requires elevated privileges to access.
++   */
++  readonly attribute nsIChannel channel;
++
++  /**
++   * The response to the request is parsed as if it were a
++   * text/xml stream. This attributes represents the response as
++   * a DOM Document object. NULL if the request is unsuccessful or
++   * has not yet been sent.
++   */
++  readonly attribute nsIDOMDocument responseXML;
++
++  /**
++   * The response to the request as text.
++   * NULL if the request is unsuccessful or
++   * has not yet been sent.
++   */
++  readonly attribute AString responseText;
++
++  /**
++   * Determine a response format which response attribute returns.
++   * empty string (initial value) or "text": as text.
++   * "arraybuffer": as a typed array ArrayBuffer.
++   * "blob": as a File API Blob.
++   * "document": as a DOM Document object.
++   */
++  attribute AString responseType;
++
++  /**
++   * The response to the request as a specified format by responseType.
++   * NULL if the request is unsuccessful or
++   * has not yet been sent.
++   */
++  [implicit_jscontext] readonly attribute jsval /* any */ response;
++
++  /**
++   * The status of the response to the request for HTTP requests.
++   */
++  // XXX spec says unsigned short
++  readonly attribute unsigned long status;
++
++  /**
++   * The string representing the status of the response for
++   * HTTP requests.
++   */
++  readonly attribute ACString statusText;
++
++  /**
++   * If the request has been sent already, this method will
++   * abort the request.
++   */
++  [binaryname(SlowAbort)] void abort();
++
++  /**
++   * Returns all of the response headers as a string for HTTP
++   * requests.
++   *
++   * @returns A string containing all of the response headers.
++   *          The empty string if the response has not yet been received.
++   */
++  ACString getAllResponseHeaders();
++
++  /**
++   * Returns the text of the header with the specified name for
++   * HTTP requests.
++   *
++   * @param header The name of the header to retrieve
++   * @returns A string containing the text of the header specified.
++   *          NULL if the response has not yet been received or the
++   *          header does not exist in the response.
++   */
++  ACString getResponseHeader(in ACString header);
++
++%{C++
++  // note this is NOT virtual so this won't muck with the vtable!
++  inline nsresult Open(const nsACString& method, const nsACString& url,
++                       bool async, const nsAString& user,
++                       const nsAString& password) {
++    return Open(method, url, async, user, password, 3);
++  }
++%}
++  /**
++   * Meant to be a script-only method for initializing a request.
++   *
++   * If there is an "active" request (that is, if open() has been called
++   * already), this is equivalent to calling abort() and then open().
++   *
++   * @param method The HTTP method - either "POST" or "GET". Ignored
++   *               if the URL is not a HTTP URL.
++   * @param url The URL to which to send the request.
++   * @param async (optional) Whether the request is synchronous or
++   *              asynchronous i.e. whether send returns only after
++   *              the response is received or if it returns immediately after
++   *              sending the request. In the latter case, notification
++   *              of completion is sent through the event listeners.
++   *              The default value is true.
++   * @param user (optional) A username for authentication if necessary.
++   *             The default value is the empty string
++   * @param password (optional) A password for authentication if necessary.
++   *                 The default value is the empty string
++   */
++  [optional_argc] void open(in ACString method, in AUTF8String url,
++                            [optional] in boolean async,
++                            [optional,Undefined(Empty)] in DOMString user,
++                            [optional,Undefined(Empty)] in DOMString password);
++
++  /**
++   * Sends the request. If the request is asynchronous, returns
++   * immediately after sending the request. If it is synchronous
++   * returns only after the response has been received.
++   *
++   * All event listeners must be set before calling send().
++   *
++   * After the initial response, all event listeners will be cleared.
++   * // XXXbz what does that mean, exactly?   
++   *
++   * @param body Either an instance of nsIDOMDocument, nsIInputStream
++   *             or a string (nsISupportsString in the native calling
++   *             case). This is used to populate the body of the
++   *             HTTP request if the HTTP request method is "POST".
++   *             If the parameter is a nsIDOMDocument, it is serialized.
++   *             If the parameter is a nsIInputStream, then it must be
++   *             compatible with nsIUploadChannel.setUploadStream, and a
++   *             Content-Length header will be added to the HTTP request
++   *             with a value given by nsIInputStream.available.  Any
++   *             headers included at the top of the stream will be
++   *             treated as part of the message body.  The MIME type of
++   *             the stream should be specified by setting the Content-
++   *             Type header via the setRequestHeader method before
++   *             calling send.
++   */
++  void   send([optional] in nsIVariant body);
++
++  /**
++   * Sets a HTTP request header for HTTP requests. You must call open
++   * before setting the request headers.
++   *
++   * @param header The name of the header to set in the request.
++   * @param value The body of the header.
++   */
++  void   setRequestHeader(in ACString header, in ACString value);
++
++  /**
++   * The amount of milliseconds a request can take before being terminated.
++   * Initially zero. Zero means there is no timeout.
++   */
++  attribute unsigned long timeout;
++
++  /**
++   * The state of the request.
++   *
++   * Possible values:
++   *   0 UNSENT   open() has not been called yet.
++   *   1 OPENED   send() has not been called yet.
++   *   2 HEADERS_RECEIVED
++   *              send() has been called, headers and status are available.
++   *   3 LOADING  Downloading, responseText holds the partial data.
++   *   4 DONE     Finished with all operations.
++   */
++  const unsigned short UNSENT = 0;
++  const unsigned short OPENED = 1;
++  const unsigned short HEADERS_RECEIVED = 2;
++  const unsigned short LOADING = 3;
++  const unsigned short DONE = 4;
++  readonly attribute unsigned short readyState;
++
++  /**
++   * Override the mime type returned by the server (if any). This may
++   * be used, for example, to force a stream to be treated and parsed
++   * as text/xml, even if the server does not report it as such. This
++   * must be done before the <code>send</code> method is invoked.
++   *
++   * @param mimetype The type used to override that returned by the server
++   *                 (if any).
++   */
++  [binaryname(SlowOverrideMimeType)] void overrideMimeType(in DOMString mimetype);
++
++  /**
++   * Set to true if this is a background service request. This will
++   * prevent a load group being associated with the request, and
++   * suppress any security dialogs from being shown * to the user.
++   * In the cases where one of those dialogs would be shown, the request
++   * will simply fail instead.
++   */
++  attribute boolean mozBackgroundRequest;
++
++  /**
++   * When set to true attempts to make cross-site Access-Control requests
++   * with credentials such as cookies and authorization headers.
++   *
++   * Never affects same-site requests.
++   *
++   * Defaults to false.
++   */
++  attribute boolean withCredentials;
++
++  /**
++   * Initialize the object for use from C++ code with the principal, script
++   * context, and owner window that should be used.
++   *
++   * @param principal The principal to use for the request. This must not be
++   *                  null.
++   * @param globalObject The associated global for the request. Can be the
++   *                     outer window, a sandbox, or a backstage pass.
++   *                     May be null, but then the request cannot create a
++   *                     document.
++   * @param baseURI The base URI to use when resolving relative URIs. May be
++   *                null.
++   * @param loadGroup An optional load group to use when performing the request.
++   *                  This will be used even if the global has a window with a
++   *                  load group.
++   */
++  [noscript] void init(in nsIPrincipal principal,
++                       in nsIGlobalObject globalObject,
++                       in nsIURI baseURI,
++                       [optional] in nsILoadGroup loadGroup);
++
++  /**
++   * Upload process can be tracked by adding event listener to |upload|.
++   */
++  readonly attribute nsIXMLHttpRequestUpload upload;
++
++  /**
++   * If true, the request will be sent without cookie and authentication
++   * headers.
++   */
++  readonly attribute boolean mozAnon;
++
++  /**
++   * If true, the same origin policy will not be enforced on the request.
++   */
++  readonly attribute boolean mozSystem;
++};
++
++[uuid(840d0d00-e83e-4a29-b3c7-67e96e90a499)]
++interface nsIXHRSendable : nsISupports {
++  // contentTypeWithCharset can be set to the contentType or
++  // contentType+charset based on what the spec says.
++  // See: https://fetch.spec.whatwg.org/#concept-bodyinit-extract
++  void getSendInfo(out nsIInputStream body,
++                   out uint64_t contentLength,
++                   out ACString contentTypeWithCharset,
++                   out ACString charset);
++};
++
++%{ C++
++#define NS_XMLHTTPREQUEST_CID                       \
++ { /* d164e770-4157-11d4-9a42-000064657374 */       \
++  0xd164e770, 0x4157, 0x11d4,                       \
++ {0x9a, 0x42, 0x00, 0x00, 0x64, 0x65, 0x73, 0x74} }
++#define NS_XMLHTTPREQUEST_CONTRACTID \
++"@mozilla.org/xmlextras/xmlhttprequest;1"
++%}
+diff --git a/layout/build/nsLayoutModule.cpp b/layout/build/nsLayoutModule.cpp
+--- a/layout/build/nsLayoutModule.cpp
++++ b/layout/build/nsLayoutModule.cpp
+@@ -57,16 +57,17 @@
+ #include "nsIEventListenerService.h"
+ #include "nsIMessageManager.h"
+ 
+ // Transformiix stuff
+ #include "mozilla/dom/XPathEvaluator.h"
+ #include "txNodeSetAdaptor.h"
+ 
+ #include "mozilla/dom/DOMParser.h"
++#include "mozilla/dom/XMLHttpRequestMainThread.h"
+ #include "nsDOMSerializer.h"
+ 
+ // view stuff
+ #include "nsContentCreatorFunctions.h"
+ 
+ #include "nsHostObjectURI.h"
+ #include "nsGlobalWindowCommands.h"
+ #include "nsIControllerCommandTable.h"
+@@ -217,16 +218,17 @@ NS_GENERIC_FACTORY_CONSTRUCTOR(HTMLEdito
+ #define PRESENTATION_TCP_SESSION_TRANSPORT_CID \
+ { 0xc9d023f4, 0x6228, 0x4c07, { 0x8b, 0x1d, 0x9c, 0x19, 0x57, 0x3f, 0xaa, 0x27 } }
+ 
+ already_AddRefed<nsIPresentationService> NS_CreatePresentationService();
+ 
+ // Factory Constructor
+ NS_GENERIC_FACTORY_CONSTRUCTOR_INIT(txNodeSetAdaptor, Init)
+ NS_GENERIC_FACTORY_CONSTRUCTOR(nsDOMSerializer)
++NS_GENERIC_FACTORY_CONSTRUCTOR_INIT(XMLHttpRequestMainThread, Init)
+ NS_GENERIC_FACTORY_CONSTRUCTOR(nsHostObjectURI)
+ NS_GENERIC_FACTORY_CONSTRUCTOR(DOMParser)
+ NS_GENERIC_FACTORY_CONSTRUCTOR(LocalStorageManager)
+ NS_GENERIC_FACTORY_CONSTRUCTOR(SessionStorageManager)
+ NS_GENERIC_FACTORY_SINGLETON_CONSTRUCTOR(DOMRequestService,
+                                          DOMRequestService::FactoryCreate)
+ NS_GENERIC_FACTORY_SINGLETON_CONSTRUCTOR(QuotaManagerService,
+                                          QuotaManagerService::FactoryCreate)
+@@ -585,16 +587,17 @@ NS_DEFINE_NAMED_CID(NS_WINDOWCOMMANDTABL
+ NS_DEFINE_NAMED_CID(NS_WINDOWCONTROLLER_CID);
+ NS_DEFINE_NAMED_CID(NS_PLUGINDOCLOADERFACTORY_CID);
+ NS_DEFINE_NAMED_CID(NS_PLUGINDOCUMENT_CID);
+ NS_DEFINE_NAMED_CID(NS_VIDEODOCUMENT_CID);
+ NS_DEFINE_NAMED_CID(NS_STYLESHEETSERVICE_CID);
+ NS_DEFINE_NAMED_CID(TRANSFORMIIX_NODESET_CID);
+ NS_DEFINE_NAMED_CID(NS_XMLSERIALIZER_CID);
+ NS_DEFINE_NAMED_CID(NS_HOSTOBJECTURI_CID);
++NS_DEFINE_NAMED_CID(NS_XMLHTTPREQUEST_CID);
+ NS_DEFINE_NAMED_CID(NS_DOMPARSER_CID);
+ NS_DEFINE_NAMED_CID(NS_DOMSESSIONSTORAGEMANAGER_CID);
+ NS_DEFINE_NAMED_CID(NS_DOMLOCALSTORAGEMANAGER_CID);
+ NS_DEFINE_NAMED_CID(NS_TEXTEDITOR_CID);
+ NS_DEFINE_NAMED_CID(DOMREQUEST_SERVICE_CID);
+ NS_DEFINE_NAMED_CID(QUOTAMANAGER_SERVICE_CID);
+ NS_DEFINE_NAMED_CID(SERVICEWORKERMANAGER_CID);
+ NS_DEFINE_NAMED_CID(NOTIFICATIONTELEMETRYSERVICE_CID);
+@@ -833,16 +836,17 @@ static const mozilla::Module::CIDEntry k
+   { &kNS_WINDOWCONTROLLER_CID, false, nullptr, CreateWindowControllerWithSingletonCommandTable },
+   { &kNS_PLUGINDOCLOADERFACTORY_CID, false, nullptr, CreateContentDLF },
+   { &kNS_PLUGINDOCUMENT_CID, false, nullptr, CreatePluginDocument },
+   { &kNS_VIDEODOCUMENT_CID, false, nullptr, CreateVideoDocument },
+   { &kNS_STYLESHEETSERVICE_CID, false, nullptr, nsStyleSheetServiceConstructor },
+   { &kTRANSFORMIIX_NODESET_CID, false, nullptr, txNodeSetAdaptorConstructor },
+   { &kNS_XMLSERIALIZER_CID, false, nullptr, nsDOMSerializerConstructor },
+   { &kNS_HOSTOBJECTURI_CID, false, nullptr, nsHostObjectURIConstructor },
++  { &kNS_XMLHTTPREQUEST_CID, false, nullptr, XMLHttpRequestMainThreadConstructor },
+   { &kNS_DOMPARSER_CID, false, nullptr, DOMParserConstructor },
+   { &kNS_DOMSESSIONSTORAGEMANAGER_CID, false, nullptr, SessionStorageManagerConstructor },
+   { &kNS_DOMLOCALSTORAGEMANAGER_CID, false, nullptr, LocalStorageManagerConstructor },
+   { &kNS_TEXTEDITOR_CID, false, nullptr, TextEditorConstructor },
+   { &kDOMREQUEST_SERVICE_CID, false, nullptr, DOMRequestServiceConstructor },
+   { &kQUOTAMANAGER_SERVICE_CID, false, nullptr, QuotaManagerServiceConstructor },
+   { &kSERVICEWORKERMANAGER_CID, false, nullptr, ServiceWorkerManagerConstructor },
+   { &kNOTIFICATIONTELEMETRYSERVICE_CID, false, nullptr, NotificationTelemetryServiceConstructor },
+@@ -946,16 +950,17 @@ static const mozilla::Module::ContractID
+ #endif
+   { CONTENT_DLF_CONTRACTID, &kNS_CONTENT_DOCUMENT_LOADER_FACTORY_CID },
+   { NS_JSPROTOCOLHANDLER_CONTRACTID, &kNS_JSPROTOCOLHANDLER_CID },
+   { NS_WINDOWCONTROLLER_CONTRACTID, &kNS_WINDOWCONTROLLER_CID },
+   { PLUGIN_DLF_CONTRACTID, &kNS_PLUGINDOCLOADERFACTORY_CID },
+   { NS_STYLESHEETSERVICE_CONTRACTID, &kNS_STYLESHEETSERVICE_CID },
+   { TRANSFORMIIX_NODESET_CONTRACTID, &kTRANSFORMIIX_NODESET_CID },
+   { NS_XMLSERIALIZER_CONTRACTID, &kNS_XMLSERIALIZER_CID },
++  { NS_XMLHTTPREQUEST_CONTRACTID, &kNS_XMLHTTPREQUEST_CID },
+   { NS_DOMPARSER_CONTRACTID, &kNS_DOMPARSER_CID },
+   { "@mozilla.org/dom/localStorage-manager;1", &kNS_DOMLOCALSTORAGEMANAGER_CID },
+   // Keeping the old ContractID for backward compatibility
+   { "@mozilla.org/dom/storagemanager;1", &kNS_DOMLOCALSTORAGEMANAGER_CID },
+   { "@mozilla.org/dom/sessionStorage-manager;1", &kNS_DOMSESSIONSTORAGEMANAGER_CID },
+   { "@mozilla.org/editor/texteditor;1", &kNS_TEXTEDITOR_CID },
+   { DOMREQUEST_SERVICE_CONTRACTID, &kDOMREQUEST_SERVICE_CID },
+   { QUOTAMANAGER_SERVICE_CONTRACTID, &kQUOTAMANAGER_SERVICE_CID },
+diff --git a/xpcom/reflect/xptinfo/ShimInterfaceInfo.cpp b/xpcom/reflect/xptinfo/ShimInterfaceInfo.cpp
+--- a/xpcom/reflect/xptinfo/ShimInterfaceInfo.cpp
++++ b/xpcom/reflect/xptinfo/ShimInterfaceInfo.cpp
+@@ -51,16 +51,17 @@
+ #include "nsIDOMXMLDocument.h"
+ #include "nsIDOMXULCommandEvent.h"
+ #include "nsIDOMXULElement.h"
+ #include "nsIFrameLoader.h"
+ #include "nsIListBoxObject.h"
+ #include "nsISelection.h"
+ #include "nsITreeBoxObject.h"
+ #include "nsIWebBrowserPersistable.h"
++#include "nsIXMLHttpRequest.h"
+ 
+ #include "mozilla/dom/CharacterDataBinding.h"
+ #include "mozilla/dom/DOMRectBinding.h"
+ #include "mozilla/dom/DOMRectListBinding.h"
+ #include "mozilla/dom/ClipboardEventBinding.h"
+ #include "mozilla/dom/CommentBinding.h"
+ #include "mozilla/dom/CSSPrimitiveValueBinding.h"
+ #include "mozilla/dom/CSSStyleDeclarationBinding.h"
+@@ -115,16 +116,18 @@
+ #include "mozilla/dom/StyleSheetListBinding.h"
+ #include "mozilla/dom/SVGElementBinding.h"
+ #include "mozilla/dom/TextBinding.h"
+ #include "mozilla/dom/TimeEventBinding.h"
+ #include "mozilla/dom/TreeBoxObjectBinding.h"
+ #include "mozilla/dom/UIEventBinding.h"
+ #include "mozilla/dom/WheelEventBinding.h"
+ #include "mozilla/dom/XMLDocumentBinding.h"
++#include "mozilla/dom/XMLHttpRequestEventTargetBinding.h"
++#include "mozilla/dom/XMLHttpRequestUploadBinding.h"
+ #include "mozilla/dom/XMLSerializerBinding.h"
+ #include "mozilla/dom/XULCommandEventBinding.h"
+ #include "mozilla/dom/XULDocumentBinding.h"
+ #include "mozilla/dom/XULElementBinding.h"
+ 
+ using namespace mozilla;
+ 
+ struct ComponentsInterfaceShimEntry {
+@@ -221,16 +224,18 @@ const ComponentsInterfaceShimEntry kComp
+   DEFINE_SHIM(ScrollAreaEvent),
+   DEFINE_SHIM_WITH_CUSTOM_INTERFACE(nsIDOMSerializer, XMLSerializer),
+   DEFINE_SHIM(Text),
+   DEFINE_SHIM_WITH_CUSTOM_INTERFACE(nsITreeBoxObject, TreeBoxObject),
+   DEFINE_SHIM(UIEvent),
+   DEFINE_SHIM_WITH_CUSTOM_INTERFACE(nsIWebBrowserPersistable, FrameLoader),
+   DEFINE_SHIM(WheelEvent),
+   DEFINE_SHIM(XMLDocument),
++  DEFINE_SHIM_WITH_CUSTOM_INTERFACE(nsIXMLHttpRequestEventTarget, XMLHttpRequestEventTarget),
++  DEFINE_SHIM_WITH_CUSTOM_INTERFACE(nsIXMLHttpRequestUpload, XMLHttpRequestUpload),
+   DEFINE_SHIM(XULCommandEvent),
+   DEFINE_SHIM(XULElement),
+   DEFINE_SHIM_WITH_CUSTOM_INTERFACE(nsISelection, Selection),
+ };
+ 
+ #undef DEFINE_SHIM
+ #undef DEFINE_SHIM_WITH_CUSTOM_INTERFACE
+ 
+# HG changeset patch
+# User RealDolos <dolos@cock.li>
+# Date 1519556715 -3600
+#      Sun Feb 25 12:05:15 2018 +0100
+# Node ID a7a4eb52466381bf2afba8ddac46a01e8da7ede6
+# Parent  02d36488c9e16f0a8180ce2add062c69cd76787e
+Backed out changeset 2c9c1b0ef8c3
+
+diff --git a/browser/installer/package-manifest.in b/browser/installer/package-manifest.in
+--- a/browser/installer/package-manifest.in
++++ b/browser/installer/package-manifest.in
+@@ -216,16 +216,17 @@
+ @RESPATH@/components/dom_range.xpt
+ @RESPATH@/components/dom_security.xpt
+ @RESPATH@/components/dom_sidebar.xpt
+ @RESPATH@/components/dom_storage.xpt
+ #ifdef MOZ_WEBSPEECH
+ @RESPATH@/components/dom_webspeechrecognition.xpt
+ #endif
+ @RESPATH@/components/dom_workers.xpt
++@RESPATH@/components/dom_xhr.xpt
+ @RESPATH@/components/dom_xul.xpt
+ @RESPATH@/components/dom_presentation.xpt
+ @RESPATH@/components/downloads.xpt
+ @RESPATH@/components/editor.xpt
+ @RESPATH@/components/enterprisepolicies.xpt
+ @RESPATH@/components/extensions.xpt
+ @RESPATH@/components/exthandler.xpt
+ @RESPATH@/components/fastfind.xpt
+diff --git a/dom/base/FormData.h b/dom/base/FormData.h
+--- a/dom/base/FormData.h
++++ b/dom/base/FormData.h
+@@ -8,16 +8,17 @@
+ #define mozilla_dom_FormData_h
+ 
+ #include "mozilla/Attributes.h"
+ #include "mozilla/ErrorResult.h"
+ #include "mozilla/dom/BindingDeclarations.h"
+ #include "mozilla/dom/HTMLFormSubmission.h"
+ #include "mozilla/dom/File.h"
+ #include "mozilla/dom/FormDataBinding.h"
++#include "nsIXMLHttpRequest.h"
+ #include "nsTArray.h"
+ #include "nsWrapperCache.h"
+ 
+ namespace mozilla {
+ namespace dom {
+ 
+ class HTMLFormElement;
+ class GlobalObject;
+diff --git a/dom/base/test/gtest/TestNativeXMLHttpRequest.cpp b/dom/base/test/gtest/TestNativeXMLHttpRequest.cpp
+new file mode 100644
+--- /dev/null
++++ b/dom/base/test/gtest/TestNativeXMLHttpRequest.cpp
+@@ -0,0 +1,50 @@
++/* -*- Mode: C++; tab-width: 8; indent-tabs-mode: nil; c-basic-offset: 2 -*- */
++/* vim: set ts=8 sts=2 et sw=2 tw=80: */
++/* This Source Code Form is subject to the terms of the Mozilla Public
++ * License, v. 2.0. If a copy of the MPL was not distributed with this
++ * file, You can obtain one at http://mozilla.org/MPL/2.0/. */
++
++#include "gtest/gtest.h"
++
++#include "nsContentUtils.h"
++#include "nsIDOMDocument.h"
++#include "nsIPrincipal.h"
++#include "nsIScriptSecurityManager.h"
++#include "nsIXMLHttpRequest.h"
++
++#define TEST_URL_PREFIX  "data:text/xml,"
++#define TEST_URL_CONTENT "<foo><bar></bar></foo>"
++#define TEST_URL         TEST_URL_PREFIX TEST_URL_CONTENT
++
++TEST(NativeXMLHttpRequest, Test)
++{
++  nsresult rv;
++
++  nsCOMPtr<nsIXMLHttpRequest> xhr =
++    do_CreateInstance(NS_XMLHTTPREQUEST_CONTRACTID, &rv);
++  ASSERT_TRUE(NS_SUCCEEDED(rv)) << "Couldn't create nsIXMLHttpRequest instance";
++
++  NS_NAMED_LITERAL_CSTRING(getString, "GET");
++  NS_NAMED_LITERAL_CSTRING(testURL, TEST_URL);
++  const nsAString& empty = EmptyString();
++
++  rv = xhr->Init(nsContentUtils::GetSystemPrincipal(), nullptr, nullptr, nullptr);
++  ASSERT_TRUE(NS_SUCCEEDED(rv)) << "Couldn't initialize the XHR";
++
++  rv = xhr->Open(getString, testURL, false, empty, empty);
++  ASSERT_TRUE(NS_SUCCEEDED(rv)) << "Open failed";
++
++  rv = xhr->Send(nullptr);
++  ASSERT_TRUE(NS_SUCCEEDED(rv)) << "Send failed";
++
++  nsAutoString response;
++  rv = xhr->GetResponseText(response);
++  ASSERT_TRUE(NS_SUCCEEDED(rv)) << "GetResponse failed";
++  ASSERT_TRUE(response.EqualsLiteral(TEST_URL_CONTENT)) <<
++    "Response text does not match";
++
++  nsCOMPtr<nsIDOMDocument> dom;
++  rv = xhr->GetResponseXML(getter_AddRefs(dom));
++  ASSERT_TRUE(NS_SUCCEEDED(rv)) << "GetResponseXML failed";
++  ASSERT_TRUE(dom) << "No DOM document constructed";
++}
+diff --git a/dom/base/test/gtest/moz.build b/dom/base/test/gtest/moz.build
+--- a/dom/base/test/gtest/moz.build
++++ b/dom/base/test/gtest/moz.build
+@@ -1,15 +1,16 @@
+ # -*- Mode: python; indent-tabs-mode: nil; tab-width: 40 -*-
+ # vim: set filetype=python:
+ # This Source Code Form is subject to the terms of the Mozilla Public
+ # License, v. 2.0. If a copy of the MPL was not distributed with this
+ # file, you can obtain one at http://mozilla.org/MPL/2.0/.
+ 
+ UNIFIED_SOURCES += [
++    'TestNativeXMLHttpRequest.cpp',
+     'TestParserDialogOptions.cpp',
+     'TestPlainTextSerializer.cpp',
+     'TestXPathGenerator.cpp',
+ ]
+ 
+ LOCAL_INCLUDES += [
+     '/dom/base'
+ ]
+diff --git a/dom/fetch/BodyExtractor.cpp b/dom/fetch/BodyExtractor.cpp
+--- a/dom/fetch/BodyExtractor.cpp
++++ b/dom/fetch/BodyExtractor.cpp
+@@ -163,16 +163,26 @@ BodyExtractor<nsIInputStream>::GetAsStre
+   NS_ENSURE_SUCCESS(rv, rv);
+ 
+   nsCOMPtr<nsIInputStream> stream(mBody);
+   stream.forget(aResult);
+   return NS_OK;
+ }
+ 
+ template<> nsresult
++BodyExtractor<nsIXHRSendable>::GetAsStream(nsIInputStream** aResult,
++                                           uint64_t* aContentLength,
++                                           nsACString& aContentTypeWithCharset,
++                                           nsACString& aCharset) const
++{
++  return mBody->GetSendInfo(aResult, aContentLength, aContentTypeWithCharset,
++                            aCharset);
++}
++
++template<> nsresult
+ BodyExtractor<const Blob>::GetAsStream(nsIInputStream** aResult,
+                                        uint64_t* aContentLength,
+                                        nsACString& aContentTypeWithCharset,
+                                        nsACString& aCharset) const
+ {
+   return mBody->GetSendInfo(aResult, aContentLength, aContentTypeWithCharset,
+                             aCharset);
+ }
+diff --git a/dom/file/Blob.h b/dom/file/Blob.h
+--- a/dom/file/Blob.h
++++ b/dom/file/Blob.h
+@@ -10,16 +10,17 @@
+ #include "mozilla/Attributes.h"
+ #include "mozilla/ErrorResult.h"
+ #include "mozilla/dom/BindingDeclarations.h"
+ #include "mozilla/dom/BlobImpl.h"
+ #include "nsCycleCollectionParticipant.h"
+ #include "nsCOMPtr.h"
+ #include "nsIDOMBlob.h"
+ #include "nsIMutable.h"
++#include "nsIXMLHttpRequest.h"
+ #include "nsWrapperCache.h"
+ #include "nsWeakReference.h"
+ 
+ class nsIInputStream;
+ 
+ namespace mozilla {
+ namespace dom {
+ 
+diff --git a/dom/filesystem/FileSystemTaskBase.h b/dom/filesystem/FileSystemTaskBase.h
+--- a/dom/filesystem/FileSystemTaskBase.h
++++ b/dom/filesystem/FileSystemTaskBase.h
+@@ -5,17 +5,16 @@
+  * You can obtain one at http://mozilla.org/MPL/2.0/. */
+ 
+ #ifndef mozilla_dom_FileSystemTaskBase_h
+ #define mozilla_dom_FileSystemTaskBase_h
+ 
+ #include "mozilla/ErrorResult.h"
+ #include "mozilla/dom/FileSystemRequestParent.h"
+ #include "mozilla/dom/PFileSystemRequestChild.h"
+-#include "nsIGlobalObject.h"
+ #include "nsThreadUtils.h"
+ 
+ namespace mozilla {
+ namespace dom {
+ 
+ class BlobImpl;
+ class FileSystemBase;
+ class FileSystemParams;
+diff --git a/dom/xhr/XMLHttpRequest.h b/dom/xhr/XMLHttpRequest.h
+--- a/dom/xhr/XMLHttpRequest.h
++++ b/dom/xhr/XMLHttpRequest.h
+@@ -5,16 +5,17 @@
+  * You can obtain one at http://mozilla.org/MPL/2.0/. */
+ 
+ #ifndef mozilla_dom_XMLHttpRequest_h
+ #define mozilla_dom_XMLHttpRequest_h
+ 
+ #include "mozilla/Attributes.h"
+ #include "mozilla/dom/XMLHttpRequestEventTarget.h"
+ #include "mozilla/dom/XMLHttpRequestBinding.h"
++#include "nsIXMLHttpRequest.h"
+ 
+ class nsIJSID;
+ 
+ namespace mozilla {
+ namespace dom {
+ 
+ class Blob;
+ class DOMString;
+diff --git a/dom/xhr/XMLHttpRequestEventTarget.cpp b/dom/xhr/XMLHttpRequestEventTarget.cpp
+--- a/dom/xhr/XMLHttpRequestEventTarget.cpp
++++ b/dom/xhr/XMLHttpRequestEventTarget.cpp
+@@ -15,16 +15,17 @@ NS_IMPL_CYCLE_COLLECTION_TRAVERSE_BEGIN_
+                                                   DOMEventTargetHelper)
+ NS_IMPL_CYCLE_COLLECTION_TRAVERSE_END
+ 
+ NS_IMPL_CYCLE_COLLECTION_UNLINK_BEGIN_INHERITED(XMLHttpRequestEventTarget,
+                                                 DOMEventTargetHelper)
+ NS_IMPL_CYCLE_COLLECTION_UNLINK_END
+ 
+ NS_INTERFACE_MAP_BEGIN_CYCLE_COLLECTION(XMLHttpRequestEventTarget)
++  NS_INTERFACE_MAP_ENTRY(nsIXMLHttpRequestEventTarget)
+ NS_INTERFACE_MAP_END_INHERITING(DOMEventTargetHelper)
+ 
+ NS_IMPL_ADDREF_INHERITED(XMLHttpRequestEventTarget, DOMEventTargetHelper)
+ NS_IMPL_RELEASE_INHERITED(XMLHttpRequestEventTarget, DOMEventTargetHelper)
+ 
+ void
+ XMLHttpRequestEventTarget::DisconnectFromOwner()
+ {
+diff --git a/dom/xhr/XMLHttpRequestEventTarget.h b/dom/xhr/XMLHttpRequestEventTarget.h
+--- a/dom/xhr/XMLHttpRequestEventTarget.h
++++ b/dom/xhr/XMLHttpRequestEventTarget.h
+@@ -3,36 +3,39 @@
+ /* This Source Code Form is subject to the terms of the Mozilla Public
+  * License, v. 2.0. If a copy of the MPL was not distributed with this file,
+  * You can obtain one at http://mozilla.org/MPL/2.0/. */
+ 
+ #ifndef mozilla_dom_XMLHttpRequestEventTarget_h
+ #define mozilla_dom_XMLHttpRequestEventTarget_h
+ 
+ #include "mozilla/DOMEventTargetHelper.h"
++#include "nsIXMLHttpRequest.h"
+ 
+ namespace mozilla {
+ namespace dom {
+ 
+-class XMLHttpRequestEventTarget : public DOMEventTargetHelper
++class XMLHttpRequestEventTarget : public DOMEventTargetHelper,
++                                  public nsIXMLHttpRequestEventTarget
+ {
+ protected:
+   explicit XMLHttpRequestEventTarget(DOMEventTargetHelper* aOwner)
+     : DOMEventTargetHelper(aOwner)
+   {}
+ 
+   XMLHttpRequestEventTarget()
+   {}
+ 
+   virtual ~XMLHttpRequestEventTarget() {}
+ 
+ public:
+   NS_DECL_ISUPPORTS_INHERITED
+   NS_DECL_CYCLE_COLLECTION_CLASS_INHERITED(XMLHttpRequestEventTarget,
+                                            DOMEventTargetHelper)
++  NS_DECL_NSIXMLHTTPREQUESTEVENTTARGET
+   NS_REALLY_FORWARD_NSIDOMEVENTTARGET(DOMEventTargetHelper)
+ 
+   IMPL_EVENT_HANDLER(loadstart)
+   IMPL_EVENT_HANDLER(progress)
+   IMPL_EVENT_HANDLER(abort)
+   IMPL_EVENT_HANDLER(error)
+   IMPL_EVENT_HANDLER(load)
+   IMPL_EVENT_HANDLER(timeout)
+diff --git a/dom/xhr/XMLHttpRequestMainThread.cpp b/dom/xhr/XMLHttpRequestMainThread.cpp
+--- a/dom/xhr/XMLHttpRequestMainThread.cpp
++++ b/dom/xhr/XMLHttpRequestMainThread.cpp
+@@ -244,19 +244,39 @@ XMLHttpRequestMainThread::~XMLHttpReques
+   mFlagSyncLooping = false;
+ 
+   mResultJSON.setUndefined();
+   mResultArrayBuffer = nullptr;
+   mozilla::DropJSObjects(this);
+ }
+ 
+ /**
++ * This Init method is called from the factory constructor.
++ */
++nsresult
++XMLHttpRequestMainThread::Init()
++{
++  nsIScriptSecurityManager* secMan = nsContentUtils::GetSecurityManager();
++  nsCOMPtr<nsIPrincipal> subjectPrincipal;
++  if (secMan) {
++    secMan->GetSystemPrincipal(getter_AddRefs(subjectPrincipal));
++  }
++  NS_ENSURE_STATE(subjectPrincipal);
++
++  // Instead of grabbing some random global from the context stack,
++  // let's use the default one (junk scope) for now.
++  // We should move away from this Init...
++  Construct(subjectPrincipal, xpc::NativeGlobal(xpc::PrivilegedJunkScope()));
++  return NS_OK;
++}
++
++/**
+  * This Init method should only be called by C++ consumers.
+  */
+-nsresult
++NS_IMETHODIMP
+ XMLHttpRequestMainThread::Init(nsIPrincipal* aPrincipal,
+                                nsIGlobalObject* aGlobalObject,
+                                nsIURI* aBaseURI,
+                                nsILoadGroup* aLoadGroup)
+ {
+   NS_ENSURE_ARG_POINTER(aPrincipal);
+   Construct(aPrincipal, aGlobalObject, aBaseURI, aLoadGroup);
+   return NS_OK;
+@@ -381,16 +401,17 @@ NS_IMPL_CYCLE_COLLECTION_TRACE_END
+ bool
+ XMLHttpRequestMainThread::IsCertainlyAliveForCC() const
+ {
+   return mWaitingForOnStopRequest;
+ }
+ 
+ // QueryInterface implementation for XMLHttpRequestMainThread
+ NS_INTERFACE_MAP_BEGIN_CYCLE_COLLECTION(XMLHttpRequestMainThread)
++  NS_INTERFACE_MAP_ENTRY(nsIXMLHttpRequest)
+   NS_INTERFACE_MAP_ENTRY(nsIRequestObserver)
+   NS_INTERFACE_MAP_ENTRY(nsIStreamListener)
+   NS_INTERFACE_MAP_ENTRY(nsIChannelEventSink)
+   NS_INTERFACE_MAP_ENTRY(nsIProgressEventSink)
+   NS_INTERFACE_MAP_ENTRY(nsIInterfaceRequestor)
+   NS_INTERFACE_MAP_ENTRY(nsITimerCallback)
+   NS_INTERFACE_MAP_ENTRY(nsINamed)
+   NS_INTERFACE_MAP_ENTRY(nsISizeOfEventTarget)
+@@ -428,29 +449,55 @@ XMLHttpRequestMainThread::SizeOfEventTar
+ 
+   return n;
+ 
+   // Measurement of the following members may be added later if DMD finds it is
+   // worthwhile:
+   // - lots
+ }
+ 
++NS_IMETHODIMP
++XMLHttpRequestMainThread::GetChannel(nsIChannel **aChannel)
++{
++  NS_ENSURE_ARG_POINTER(aChannel);
++  NS_IF_ADDREF(*aChannel = mChannel);
++
++  return NS_OK;
++}
++
+ static void LogMessage(const char* aWarning, nsPIDOMWindowInner* aWindow,
+                        const char16_t** aParams=nullptr, uint32_t aParamCount=0)
+ {
+   nsCOMPtr<nsIDocument> doc;
+   if (aWindow) {
+     doc = aWindow->GetExtantDoc();
+   }
+   nsContentUtils::ReportToConsole(nsIScriptError::warningFlag,
+                                   NS_LITERAL_CSTRING("DOM"), doc,
+                                   nsContentUtils::eDOM_PROPERTIES,
+                                   aWarning, aParams, aParamCount);
+ }
+ 
++NS_IMETHODIMP
++XMLHttpRequestMainThread::GetResponseXML(nsIDOMDocument **aResponseXML)
++{
++  ErrorResult rv;
++  nsIDocument* responseXML = GetResponseXML(rv);
++  if (rv.Failed()) {
++    return rv.StealNSResult();
++  }
++
++  if (!responseXML) {
++    *aResponseXML = nullptr;
++    return NS_OK;
++  }
++
++  return CallQueryInterface(responseXML, aResponseXML);
++}
++
+ nsIDocument*
+ XMLHttpRequestMainThread::GetResponseXML(ErrorResult& aRv)
+ {
+   if (mResponseType != XMLHttpRequestResponseType::_empty &&
+       mResponseType != XMLHttpRequestResponseType::Document) {
+     aRv.Throw(NS_ERROR_DOM_INVALID_STATE_XHR_HAS_WRONG_RESPONSETYPE_FOR_RESPONSEXML);
+     return nullptr;
+   }
+@@ -539,16 +586,30 @@ XMLHttpRequestMainThread::AppendToRespon
+   MOZ_ASSERT(result == kInputEmpty);
+   MOZ_ASSERT(read == aSrcBufferLen);
+   MOZ_ASSERT(written <= destBufferLen.value());
+   Unused << hadErrors;
+   helper.AddLength(written);
+   return NS_OK;
+ }
+ 
++NS_IMETHODIMP
++XMLHttpRequestMainThread::GetResponseText(nsAString& aResponseText)
++{
++  ErrorResult rv;
++  DOMString str;
++  GetResponseText(str, rv);
++  if (NS_WARN_IF(rv.Failed())) {
++    return rv.StealNSResult();
++  }
++
++  str.ToString(aResponseText);
++  return NS_OK;
++}
++
+ void
+ XMLHttpRequestMainThread::GetResponseText(DOMString& aResponseText,
+                                           ErrorResult& aRv)
+ {
+   XMLHttpRequestStringSnapshot snapshot;
+   GetResponseText(snapshot, aRv);
+   if (aRv.Failed()) {
+     return;
+@@ -630,16 +691,40 @@ XMLHttpRequestMainThread::CreateResponse
+   if (!JS_ParseJSON(aCx, string.BeginReading(), string.Length(), &value)) {
+     return NS_ERROR_FAILURE;
+   }
+ 
+   mResultJSON = value;
+   return NS_OK;
+ }
+ 
++NS_IMETHODIMP XMLHttpRequestMainThread::GetResponseType(nsAString& aResponseType)
++{
++  MOZ_ASSERT(mResponseType < XMLHttpRequestResponseType::EndGuard_);
++  const EnumEntry& entry =
++    XMLHttpRequestResponseTypeValues::strings[static_cast<uint32_t>(mResponseType)];
++  aResponseType.AssignASCII(entry.value, entry.length);
++  return NS_OK;
++}
++
++NS_IMETHODIMP XMLHttpRequestMainThread::SetResponseType(const nsAString& aResponseType)
++{
++  uint32_t i = 0;
++  for (const EnumEntry* entry = XMLHttpRequestResponseTypeValues::strings;
++       entry->value; ++entry, ++i) {
++    if (aResponseType.EqualsASCII(entry->value, entry->length)) {
++      ErrorResult rv;
++      SetResponseType(static_cast<XMLHttpRequestResponseType>(i), rv);
++      return rv.StealNSResult();
++    }
++  }
++
++  return NS_OK;
++}
++
+ void
+ XMLHttpRequestMainThread::SetResponseType(XMLHttpRequestResponseType aResponseType,
+                                           ErrorResult& aRv)
+ {
+   NOT_CALLABLE_IN_SYNC_SEND_RV
+ 
+   if (mState == XMLHttpRequestBinding::LOADING ||
+       mState == XMLHttpRequestBinding::DONE) {
+@@ -665,16 +750,24 @@ XMLHttpRequestMainThread::SetResponseTyp
+   if (aResponseType == XMLHttpRequestResponseType::Moz_chunked_arraybuffer) {
+     Telemetry::Accumulate(Telemetry::MOZ_CHUNKED_ARRAYBUFFER_IN_XHR, 1);
+   }
+ 
+   // Set the responseType attribute's value to the given value.
+   mResponseType = aResponseType;
+ }
+ 
++NS_IMETHODIMP
++XMLHttpRequestMainThread::GetResponse(JSContext *aCx, JS::MutableHandle<JS::Value> aResult)
++{
++  ErrorResult rv;
++  GetResponse(aCx, aResult, rv);
++  return rv.StealNSResult();
++}
++
+ void
+ XMLHttpRequestMainThread::GetResponse(JSContext* aCx,
+                                       JS::MutableHandle<JS::Value> aResponse,
+                                       ErrorResult& aRv)
+ {
+   switch (mResponseType) {
+   case XMLHttpRequestResponseType::_empty:
+   case XMLHttpRequestResponseType::Text:
+@@ -818,16 +911,24 @@ XMLHttpRequestMainThread::GetResponseURL
+     return;
+   }
+ 
+   nsAutoCString temp;
+   responseUrl->GetSpecIgnoringRef(temp);
+   CopyUTF8toUTF16(temp, aUrl);
+ }
+ 
++NS_IMETHODIMP
++XMLHttpRequestMainThread::GetStatus(uint32_t *aStatus)
++{
++  ErrorResult rv;
++  *aStatus = GetStatus(rv);
++  return rv.StealNSResult();
++}
++
+ uint32_t
+ XMLHttpRequestMainThread::GetStatus(ErrorResult& aRv)
+ {
+   // Make sure we don't leak status information from denied cross-site
+   // requests.
+   if (IsDeniedCrossSiteCORSRequest()) {
+     return 0;
+   }
+@@ -864,16 +965,24 @@ XMLHttpRequestMainThread::GetStatus(Erro
+   nsresult rv = httpChannel->GetResponseStatus(&status);
+   if (NS_FAILED(rv)) {
+     status = 0;
+   }
+ 
+   return status;
+ }
+ 
++NS_IMETHODIMP
++XMLHttpRequestMainThread::GetStatusText(nsACString& aOut)
++{
++  ErrorResult rv;
++  GetStatusText(aOut, rv);
++  return rv.StealNSResult();
++}
++
+ void
+ XMLHttpRequestMainThread::GetStatusText(nsACString& aStatusText,
+                                         ErrorResult& aRv)
+ {
+   // Return an empty status text on all error loads.
+   aStatusText.Truncate();
+ 
+   // Make sure we don't leak status information from denied cross-site
+@@ -1036,16 +1145,23 @@ XMLHttpRequestMainThread::AbortInternal(
+   // Step 3
+   if (mState == XMLHttpRequestBinding::DONE) {
+     ChangeState(XMLHttpRequestBinding::UNSENT, false); // no ReadystateChange event
+   }
+ 
+   mFlagSyncLooping = false;
+ }
+ 
++NS_IMETHODIMP
++XMLHttpRequestMainThread::SlowAbort()
++{
++  Abort();
++  return NS_OK;
++}
++
+ /*Method that checks if it is safe to expose a header value to the client.
+ It is used to check what headers are exposed for CORS requests.*/
+ bool
+ XMLHttpRequestMainThread::IsSafeHeader(const nsACString& aHeader,
+                                        NotNull<nsIHttpChannel*> aHttpChannel) const
+ {
+   // See bug #380418. Hide "Set-Cookie" headers from non-chrome scripts.
+   if (!IsSystemXHR() && nsContentUtils::IsForbiddenResponseHeader(aHeader)) {
+@@ -1093,16 +1209,24 @@ XMLHttpRequestMainThread::IsSafeHeader(c
+     }
+     if (aHeader.Equals(token, nsCaseInsensitiveCStringComparator())) {
+       isSafe = true;
+     }
+   }
+   return isSafe;
+ }
+ 
++NS_IMETHODIMP
++XMLHttpRequestMainThread::GetAllResponseHeaders(nsACString& aOut)
++{
++  ErrorResult rv;
++  GetAllResponseHeaders(aOut, rv);
++  return rv.StealNSResult();
++}
++
+ void
+ XMLHttpRequestMainThread::GetAllResponseHeaders(nsACString& aResponseHeaders,
+                                                 ErrorResult& aRv)
+ {
+   NOT_CALLABLE_IN_SYNC_SEND_RV
+ 
+   aResponseHeaders.Truncate();
+ 
+@@ -1152,16 +1276,25 @@ XMLHttpRequestMainThread::GetAllResponse
+     if (NS_SUCCEEDED(mChannel->GetContentLength(&length))) {
+       aResponseHeaders.AppendLiteral("Content-Length: ");
+       aResponseHeaders.AppendInt(length);
+       aResponseHeaders.AppendLiteral("\r\n");
+     }
+   }
+ }
+ 
++NS_IMETHODIMP
++XMLHttpRequestMainThread::GetResponseHeader(const nsACString& aHeader,
++                                            nsACString& aResult)
++{
++  ErrorResult rv;
++  GetResponseHeader(aHeader, aResult, rv);
++  return rv.StealNSResult();
++}
++
+ void
+ XMLHttpRequestMainThread::GetResponseHeader(const nsACString& header,
+                                             nsACString& _retval, ErrorResult& aRv)
+ {
+   NOT_CALLABLE_IN_SYNC_SEND_RV
+ 
+   _retval.SetIsVoid(true);
+ 
+@@ -1380,16 +1513,25 @@ XMLHttpRequestMainThread::IsSystemXHR() 
+ 
+ bool
+ XMLHttpRequestMainThread::InUploadPhase() const
+ {
+   // We're in the upload phase while our state is OPENED.
+   return mState == XMLHttpRequestBinding::OPENED;
+ }
+ 
++NS_IMETHODIMP
++XMLHttpRequestMainThread::Open(const nsACString& aMethod, const nsACString& aUrl,
++                               bool aAsync, const nsAString& aUsername,
++                               const nsAString& aPassword, uint8_t optional_argc)
++{
++  return Open(aMethod, aUrl, optional_argc > 0 ? aAsync : true,
++              aUsername, aPassword);
++}
++
+ // This case is hit when the async parameter is outright omitted, which
+ // should set it to true (and the username and password to null).
+ void
+ XMLHttpRequestMainThread::Open(const nsACString& aMethod, const nsAString& aUrl,
+                                ErrorResult& aRv)
+ {
+   Open(aMethod, aUrl, true, VoidString(), VoidString(), aRv);
+ }
+@@ -2026,19 +2168,18 @@ XMLHttpRequestMainThread::OnStartRequest
+                                      DocumentFlavorLegacyGuess);
+     NS_ENSURE_SUCCESS(rv, rv);
+     mResponseXML = do_QueryInterface(responseDoc);
+     mResponseXML->SetChromeXHRDocURI(chromeXHRDocURI);
+     mResponseXML->SetChromeXHRDocBaseURI(chromeXHRDocBaseURI);
+ 
+     // suppress parsing failure messages to console for statuses which
+     // can have empty bodies (see bug 884693).
+-    IgnoredErrorResult rv2;
+-    uint32_t responseStatus = GetStatus(rv2);
+-    if (!rv2.Failed() &&
++    uint32_t responseStatus;
++    if (NS_SUCCEEDED(GetStatus(&responseStatus)) &&
+         (responseStatus == 201 || responseStatus == 202 ||
+          responseStatus == 204 || responseStatus == 205 ||
+          responseStatus == 304)) {
+       mResponseXML->SetSuppressParserErrorConsoleMessages(true);
+     }
+ 
+     if (nsContentUtils::IsSystemPrincipal(mPrincipal)) {
+       mResponseXML->ForceEnableXULXBL();
+@@ -2672,16 +2813,96 @@ XMLHttpRequestMainThread::InitiateFetch(
+       mState = XMLHttpRequestBinding::DONE;
+       return NS_ERROR_DOM_NETWORK_ERR;
+     }
+   }
+ 
+   return NS_OK;
+ }
+ 
++NS_IMETHODIMP
++XMLHttpRequestMainThread::Send(nsIVariant* aVariant)
++{
++  if (!aVariant) {
++    return SendInternal(nullptr);
++  }
++
++  uint16_t dataType;
++  nsresult rv = aVariant->GetDataType(&dataType);
++  NS_ENSURE_SUCCESS(rv, rv);
++
++  if (dataType == nsIDataType::VTYPE_INTERFACE ||
++      dataType == nsIDataType::VTYPE_INTERFACE_IS) {
++    nsCOMPtr<nsISupports> supports;
++    nsID *iid;
++    rv = aVariant->GetAsInterface(&iid, getter_AddRefs(supports));
++    NS_ENSURE_SUCCESS(rv, rv);
++
++    free(iid);
++
++    // document?
++    nsCOMPtr<nsIDocument> doc = do_QueryInterface(supports);
++    if (doc) {
++      BodyExtractor<nsIDocument> body(doc);
++      return SendInternal(&body);
++    }
++
++    // nsISupportsString?
++    nsCOMPtr<nsISupportsString> wstr = do_QueryInterface(supports);
++    if (wstr) {
++      nsAutoString string;
++      wstr->GetData(string);
++      BodyExtractor<const nsAString> body(&string);
++      return SendInternal(&body);
++    }
++
++    // nsIInputStream?
++    nsCOMPtr<nsIInputStream> stream = do_QueryInterface(supports);
++    if (stream) {
++      BodyExtractor<nsIInputStream> body(stream);
++      return SendInternal(&body);
++    }
++
++    // nsIXHRSendable?
++    nsCOMPtr<nsIXHRSendable> sendable = do_QueryInterface(supports);
++    if (sendable) {
++      BodyExtractor<nsIXHRSendable> body(sendable);
++      return SendInternal(&body);
++    }
++
++    // ArrayBuffer?
++    JS::RootingContext* rootingCx = RootingCx();
++    JS::Rooted<JS::Value> realVal(rootingCx);
++
++    nsresult rv = aVariant->GetAsJSVal(&realVal);
++    if (NS_SUCCEEDED(rv) && !realVal.isPrimitive()) {
++      JS::Rooted<JSObject*> obj(rootingCx, realVal.toObjectOrNull());
++      RootedSpiderMonkeyInterface<ArrayBuffer> buf(rootingCx);
++      if (buf.Init(obj)) {
++        BodyExtractor<const ArrayBuffer> body(&buf);
++        return SendInternal(&body);
++      }
++    }
++  } else if (dataType == nsIDataType::VTYPE_VOID ||
++           dataType == nsIDataType::VTYPE_EMPTY) {
++    return SendInternal(nullptr);
++  }
++
++  char16_t* data = nullptr;
++  uint32_t len = 0;
++  rv = aVariant->GetAsWStringWithSize(&len, &data);
++  NS_ENSURE_SUCCESS(rv, rv);
++
++  nsString string;
++  string.Adopt(data, len);
++
++  BodyExtractor<const nsAString> body(&string);
++  return SendInternal(&body);
++}
++
+ void
+ XMLHttpRequestMainThread::UnsuppressEventHandlingAndResume()
+ {
+   MOZ_ASSERT(NS_IsMainThread());
+   MOZ_ASSERT(mFlagSynchronous);
+ 
+   if (mSuspendedDoc) {
+     mSuspendedDoc->UnsuppressEventHandlingAndFireEvents(true);
+@@ -2987,67 +3208,80 @@ XMLHttpRequestMainThread::IsLowercaseRes
+                                  false);
+     sLowercaseResponseHeaderAdded = true;
+   }
+ 
+   return sIsLowercaseResponseHeaderEnabled;
+ }
+ 
+ // http://dvcs.w3.org/hg/xhr/raw-file/tip/Overview.html#dom-xmlhttprequest-setrequestheader
+-void
++NS_IMETHODIMP
+ XMLHttpRequestMainThread::SetRequestHeader(const nsACString& aName,
+-                                           const nsACString& aValue,
+-                                           ErrorResult& aRv)
++                                           const nsACString& aValue)
+ {
+-  NOT_CALLABLE_IN_SYNC_SEND_RV
++  NOT_CALLABLE_IN_SYNC_SEND
+ 
+   // Step 1
+   if (mState != XMLHttpRequestBinding::OPENED) {
+-    aRv.Throw(NS_ERROR_DOM_INVALID_STATE_XHR_MUST_BE_OPENED);
+-    return;
++    return NS_ERROR_DOM_INVALID_STATE_XHR_MUST_BE_OPENED;
+   }
+ 
+   // Step 2
+   if (mFlagSend) {
+-    aRv.Throw(NS_ERROR_DOM_INVALID_STATE_XHR_MUST_NOT_BE_SENDING);
+-    return;
++    return NS_ERROR_DOM_INVALID_STATE_XHR_MUST_NOT_BE_SENDING;
+   }
+ 
+   // Step 3
+   nsAutoCString value;
+   NS_TrimHTTPWhitespace(aValue, value);
+ 
+   // Step 4
+   if (!NS_IsValidHTTPToken(aName) || !NS_IsReasonableHTTPHeaderValue(value)) {
+-    aRv.Throw(NS_ERROR_DOM_INVALID_HEADER_NAME);
+-    return;
++    return NS_ERROR_DOM_INVALID_HEADER_NAME;
+   }
+ 
+   // Step 5
+   bool isPrivilegedCaller = IsSystemXHR();
+   bool isForbiddenHeader = nsContentUtils::IsForbiddenRequestHeader(aName);
+   if (!isPrivilegedCaller && isForbiddenHeader) {
+     NS_ConvertUTF8toUTF16 name(aName);
+     const char16_t* params[] = { name.get() };
+     LogMessage("ForbiddenHeaderWarning", GetOwner(), params, ArrayLength(params));
+-    return;
++    return NS_OK;
+   }
+ 
+   // Step 6.1
+   // Skipping for now, as normalizing the case of header names may not be
+   // web-compatible. See bug 1285036.
+ 
+   // Step 6.2-6.3
+   // Gecko-specific: invalid headers can be set by privileged
+   //                 callers, but will not merge.
+   if (isPrivilegedCaller && isForbiddenHeader) {
+     mAuthorRequestHeaders.Set(aName, value);
+   } else {
+     mAuthorRequestHeaders.MergeOrSet(aName, value);
+   }
++
++  return NS_OK;
++}
++
++NS_IMETHODIMP
++XMLHttpRequestMainThread::GetTimeout(uint32_t *aTimeout)
++{
++  *aTimeout = Timeout();
++  return NS_OK;
++}
++
++NS_IMETHODIMP
++XMLHttpRequestMainThread::SetTimeout(uint32_t aTimeout)
++{
++  ErrorResult rv;
++  SetTimeout(aTimeout, rv);
++  return rv.StealNSResult();
+ }
+ 
+ void
+ XMLHttpRequestMainThread::SetTimeout(uint32_t aTimeout, ErrorResult& aRv)
+ {
+   NOT_CALLABLE_IN_SYNC_SEND_RV
+ 
+   if (mFlagSynchronous &&
+@@ -3113,16 +3347,23 @@ XMLHttpRequestMainThread::StartTimeoutTi
+     (uint32_t)((PR_Now() - mRequestSentTime) / PR_USEC_PER_MSEC);
+   mTimeoutTimer->InitWithCallback(
+     this,
+     mTimeoutMilliseconds > elapsed ? mTimeoutMilliseconds - elapsed : 0,
+     nsITimer::TYPE_ONE_SHOT
+   );
+ }
+ 
++NS_IMETHODIMP
++XMLHttpRequestMainThread::GetReadyState(uint16_t *aState)
++{
++  *aState = ReadyState();
++  return NS_OK;
++}
++
+ uint16_t
+ XMLHttpRequestMainThread::ReadyState() const
+ {
+   return mState;
+ }
+ 
+ void
+ XMLHttpRequestMainThread::OverrideMimeType(const nsAString& aMimeType,
+@@ -3135,23 +3376,38 @@ XMLHttpRequestMainThread::OverrideMimeTy
+     ResetResponse();
+     aRv.Throw(NS_ERROR_DOM_INVALID_STATE_XHR_MUST_NOT_BE_LOADING_OR_DONE);
+     return;
+   }
+ 
+   mOverrideMimeType = aMimeType;
+ }
+ 
++NS_IMETHODIMP
++XMLHttpRequestMainThread::SlowOverrideMimeType(const nsAString& aMimeType)
++{
++  ErrorResult aRv;
++  OverrideMimeType(aMimeType, aRv);
++  return aRv.StealNSResult();
++}
++
++NS_IMETHODIMP
++XMLHttpRequestMainThread::GetMozBackgroundRequest(bool *_retval)
++{
++  *_retval = MozBackgroundRequest();
++  return NS_OK;
++}
++
+ bool
+ XMLHttpRequestMainThread::MozBackgroundRequest() const
+ {
+   return mFlagBackgroundRequest;
+ }
+ 
+-nsresult
++NS_IMETHODIMP
+ XMLHttpRequestMainThread::SetMozBackgroundRequest(bool aMozBackgroundRequest)
+ {
+   if (!IsSystemXHR()) {
+     return NS_ERROR_DOM_SECURITY_ERR;
+   }
+ 
+   if (mState != XMLHttpRequestBinding::UNSENT) {
+     // Can't change this while we're in the middle of something.
+@@ -3166,22 +3422,37 @@ XMLHttpRequestMainThread::SetMozBackgrou
+ void
+ XMLHttpRequestMainThread::SetMozBackgroundRequest(bool aMozBackgroundRequest,
+                                                   ErrorResult& aRv)
+ {
+   // No errors for this webIDL method on main-thread.
+   SetMozBackgroundRequest(aMozBackgroundRequest);
+ }
+ 
++NS_IMETHODIMP
++XMLHttpRequestMainThread::GetWithCredentials(bool *_retval)
++{
++  *_retval = WithCredentials();
++  return NS_OK;
++}
++
+ bool
+ XMLHttpRequestMainThread::WithCredentials() const
+ {
+   return mFlagACwithCredentials;
+ }
+ 
++NS_IMETHODIMP
++XMLHttpRequestMainThread::SetWithCredentials(bool aWithCredentials)
++{
++  ErrorResult rv;
++  SetWithCredentials(aWithCredentials, rv);
++  return rv.StealNSResult();
++}
++
+ void
+ XMLHttpRequestMainThread::SetWithCredentials(bool aWithCredentials, ErrorResult& aRv)
+ {
+   NOT_CALLABLE_IN_SYNC_SEND_RV
+ 
+   // Return error if we're already processing a request.  Note that we can't use
+   // ReadyState() here, because it can't differentiate between "opened" and
+   // "sent", so we use mState directly.
+@@ -3423,28 +3694,51 @@ XMLHttpRequestUpload*
+ XMLHttpRequestMainThread::GetUpload(ErrorResult& aRv)
+ {
+   if (!mUpload) {
+     mUpload = new XMLHttpRequestUpload(this);
+   }
+   return mUpload;
+ }
+ 
++NS_IMETHODIMP
++XMLHttpRequestMainThread::GetUpload(nsIXMLHttpRequestUpload** aUpload)
++{
++  ErrorResult rv;
++  RefPtr<XMLHttpRequestUpload> upload = GetUpload(rv);
++  upload.forget(aUpload);
++  return rv.StealNSResult();
++}
++
+ bool
+ XMLHttpRequestMainThread::MozAnon() const
+ {
+   return mIsAnon;
+ }
+ 
++NS_IMETHODIMP
++XMLHttpRequestMainThread::GetMozAnon(bool* aAnon)
++{
++  *aAnon = MozAnon();
++  return NS_OK;
++}
++
+ bool
+ XMLHttpRequestMainThread::MozSystem() const
+ {
+   return IsSystemXHR();
+ }
+ 
++NS_IMETHODIMP
++XMLHttpRequestMainThread::GetMozSystem(bool* aSystem)
++{
++  *aSystem = MozSystem();
++  return NS_OK;
++}
++
+ void
+ XMLHttpRequestMainThread::HandleTimeoutCallback()
+ {
+   if (mState == XMLHttpRequestBinding::DONE) {
+     NS_NOTREACHED("XMLHttpRequestMainThread::HandleTimeoutCallback with completed request");
+     // do nothing!
+     return;
+   }
+diff --git a/dom/xhr/XMLHttpRequestMainThread.h b/dom/xhr/XMLHttpRequestMainThread.h
+--- a/dom/xhr/XMLHttpRequestMainThread.h
++++ b/dom/xhr/XMLHttpRequestMainThread.h
+@@ -4,16 +4,17 @@
+  * License, v. 2.0. If a copy of the MPL was not distributed with this
+  * file, You can obtain one at http://mozilla.org/MPL/2.0/. */
+ 
+ #ifndef mozilla_dom_XMLHttpRequestMainThread_h
+ #define mozilla_dom_XMLHttpRequestMainThread_h
+ 
+ #include <bitset>
+ #include "nsAutoPtr.h"
++#include "nsIXMLHttpRequest.h"
+ #include "nsISupportsUtils.h"
+ #include "nsIURI.h"
+ #include "nsIHttpChannel.h"
+ #include "nsIDocument.h"
+ #include "nsIStreamListener.h"
+ #include "nsIChannelEventSink.h"
+ #include "nsIAsyncVerifyRedirectCallback.h"
+ #include "nsIInterfaceRequestor.h"
+@@ -156,16 +157,17 @@ public:
+   void GetCORSUnsafeHeaders(nsTArray<nsCString>& aArray) const;
+ };
+ 
+ class nsXHRParseEndListener;
+ 
+ // Make sure that any non-DOM interfaces added here are also added to
+ // nsXMLHttpRequestXPCOMifier.
+ class XMLHttpRequestMainThread final : public XMLHttpRequest,
++                                       public nsIXMLHttpRequest,
+                                        public nsIStreamListener,
+                                        public nsIChannelEventSink,
+                                        public nsIProgressEventSink,
+                                        public nsIInterfaceRequestor,
+                                        public nsITimerCallback,
+                                        public nsISizeOfEventTarget,
+                                        public nsINamed,
+                                        public MutableBlobStorageCallback
+@@ -219,16 +221,21 @@ public:
+     mIsSystem = aSystem;
+   }
+ 
+   void SetClientInfoAndController(const ClientInfo& aClientInfo,
+                                   const Maybe<ServiceWorkerDescriptor>& aController);
+ 
+   NS_DECL_ISUPPORTS_INHERITED
+ 
++  // nsIXMLHttpRequest
++  NS_DECL_NSIXMLHTTPREQUEST
++
++  NS_FORWARD_NSIXMLHTTPREQUESTEVENTTARGET(XMLHttpRequestEventTarget::)
++
+   // nsIStreamListener
+   NS_DECL_NSISTREAMLISTENER
+ 
+   // nsIRequestObserver
+   NS_DECL_NSIREQUESTOBSERVER
+ 
+   // nsIChannelEventSink
+   NS_DECL_NSICHANNELEVENTSINK
+@@ -273,17 +280,20 @@ public:
+   Open(const nsACString& aMethod,
+        const nsACString& aUrl,
+        bool aAsync,
+        const nsAString& aUsername,
+        const nsAString& aPassword);
+ 
+   virtual void
+   SetRequestHeader(const nsACString& aName, const nsACString& aValue,
+-                   ErrorResult& aRv) override;
++                   ErrorResult& aRv) override
++  {
++    aRv = SetRequestHeader(aName, aValue);
++  }
+ 
+   virtual uint32_t
+   Timeout() const override
+   {
+     return mTimeoutMilliseconds;
+   }
+ 
+   virtual void
+@@ -413,19 +423,16 @@ public:
+                   ErrorResult& aRv);
+ 
+   virtual nsIDocument*
+   GetResponseXML(ErrorResult& aRv) override;
+ 
+   virtual bool
+   MozBackgroundRequest() const override;
+ 
+-  nsresult
+-  SetMozBackgroundRequest(bool aMozBackgroundRequest);
+-
+   virtual void
+   SetMozBackgroundRequest(bool aMozBackgroundRequest, ErrorResult& aRv) override;
+ 
+   virtual uint16_t
+   ErrorCode() const override
+   {
+     return static_cast<uint16_t>(mErrorLoad);
+   }
+@@ -462,21 +469,22 @@ public:
+ 
+   // This fires a trusted readystatechange event, which is not cancelable and
+   // doesn't bubble.
+   nsresult FireReadystatechangeEvent();
+   void DispatchProgressEvent(DOMEventTargetHelper* aTarget,
+                              const ProgressEventType aType,
+                              int64_t aLoaded, int64_t aTotal);
+ 
+-  // This is called by nsXULTemplateQueryProcessorXML.
+-  nsresult Init(nsIPrincipal* aPrincipal,
+-                nsIGlobalObject* aGlobalObject,
+-                nsIURI* aBaseURI,
+-                nsILoadGroup* aLoadGroup);
++  // This is called by the factory constructor.
++  nsresult Init();
++
++  nsresult init(nsIPrincipal* principal,
++                nsPIDOMWindowInner* globalObject,
++                nsIURI* baseURI);
+ 
+   void SetRequestObserver(nsIRequestObserver* aObserver);
+ 
+   NS_DECL_CYCLE_COLLECTION_SCRIPT_HOLDER_CLASS_INHERITED(XMLHttpRequestMainThread,
+                                                          XMLHttpRequest)
+   virtual bool IsCertainlyAliveForCC() const override;
+ 
+   bool AllowUploadProgress();
+diff --git a/dom/xhr/XMLHttpRequestUpload.cpp b/dom/xhr/XMLHttpRequestUpload.cpp
+--- a/dom/xhr/XMLHttpRequestUpload.cpp
++++ b/dom/xhr/XMLHttpRequestUpload.cpp
+@@ -6,16 +6,17 @@
+ 
+ #include "XMLHttpRequestUpload.h"
+ #include "mozilla/dom/XMLHttpRequestUploadBinding.h"
+ 
+ namespace mozilla {
+ namespace dom {
+ 
+ NS_INTERFACE_MAP_BEGIN(XMLHttpRequestUpload)
++  NS_INTERFACE_MAP_ENTRY(nsIXMLHttpRequestUpload)
+ NS_INTERFACE_MAP_END_INHERITING(XMLHttpRequestEventTarget)
+ 
+ NS_IMPL_ADDREF_INHERITED(XMLHttpRequestUpload, XMLHttpRequestEventTarget)
+ NS_IMPL_RELEASE_INHERITED(XMLHttpRequestUpload, XMLHttpRequestEventTarget)
+ 
+ /* virtual */ JSObject*
+ XMLHttpRequestUpload::WrapObject(JSContext* aCx, JS::Handle<JSObject*> aGivenProto)
+ {
+diff --git a/dom/xhr/XMLHttpRequestUpload.h b/dom/xhr/XMLHttpRequestUpload.h
+--- a/dom/xhr/XMLHttpRequestUpload.h
++++ b/dom/xhr/XMLHttpRequestUpload.h
+@@ -3,32 +3,36 @@
+ /* This Source Code Form is subject to the terms of the Mozilla Public
+  * License, v. 2.0. If a copy of the MPL was not distributed with this file,
+  * You can obtain one at http://mozilla.org/MPL/2.0/. */
+ 
+ #ifndef mozilla_dom_XMLHttpRequestUpload_h
+ #define mozilla_dom_XMLHttpRequestUpload_h
+ 
+ #include "mozilla/dom/XMLHttpRequestEventTarget.h"
++#include "nsIXMLHttpRequest.h"
+ 
+ namespace mozilla {
+ namespace dom {
+ 
+-class XMLHttpRequestUpload final : public XMLHttpRequestEventTarget
++class XMLHttpRequestUpload final : public XMLHttpRequestEventTarget,
++                                   public nsIXMLHttpRequestUpload
+ {
+ public:
+   explicit XMLHttpRequestUpload(DOMEventTargetHelper* aOwner)
+     : XMLHttpRequestEventTarget(aOwner)
+   {}
+ 
+   explicit XMLHttpRequestUpload()
+   {}
+ 
+   NS_DECL_ISUPPORTS_INHERITED
++  NS_FORWARD_NSIXMLHTTPREQUESTEVENTTARGET(XMLHttpRequestEventTarget::)
+   NS_REALLY_FORWARD_NSIDOMEVENTTARGET(XMLHttpRequestEventTarget)
++  NS_DECL_NSIXMLHTTPREQUESTUPLOAD
+ 
+   virtual JSObject*
+   WrapObject(JSContext *cx, JS::Handle<JSObject*> aGivenProto) override;
+ 
+   bool HasListeners()
+   {
+     return mListenerManager && mListenerManager->HasListeners();
+   }
+diff --git a/dom/xhr/moz.build b/dom/xhr/moz.build
+--- a/dom/xhr/moz.build
++++ b/dom/xhr/moz.build
+@@ -2,16 +2,22 @@
+ # vim: set filetype=python:
+ # This Source Code Form is subject to the terms of the Mozilla Public
+ # License, v. 2.0. If a copy of the MPL was not distributed with this
+ # file, You can obtain one at http://mozilla.org/MPL/2.0/.
+ 
+ with Files("**"):
+     BUG_COMPONENT = ("Core", "DOM")
+ 
++XPIDL_SOURCES += [
++    'nsIXMLHttpRequest.idl',
++]
++
++XPIDL_MODULE = 'dom_xhr'
++
+ EXPORTS.mozilla.dom += [
+     'XMLHttpRequest.h',
+     'XMLHttpRequestEventTarget.h',
+     'XMLHttpRequestMainThread.h',
+     'XMLHttpRequestString.h',
+     'XMLHttpRequestUpload.h',
+ ]
+ 
+diff --git a/dom/xhr/nsIXMLHttpRequest.idl b/dom/xhr/nsIXMLHttpRequest.idl
+new file mode 100644
+--- /dev/null
++++ b/dom/xhr/nsIXMLHttpRequest.idl
+@@ -0,0 +1,324 @@
++/* -*- Mode: C++; tab-width: 2; indent-tabs-mode: nil; c-basic-offset: 2 -*- */
++/* This Source Code Form is subject to the terms of the Mozilla Public
++ * License, v. 2.0. If a copy of the MPL was not distributed with this
++ * file, You can obtain one at http://mozilla.org/MPL/2.0/. */
++
++#include "nsIDOMEventTarget.idl"
++
++interface nsIChannel;
++interface nsIDOMDocument;
++interface nsIDOMEventListener;
++interface nsILoadGroup;
++interface nsIPrincipal;
++interface nsIScriptContext;
++interface nsIURI;
++interface nsIVariant;
++interface nsIGlobalObject;
++interface nsIInputStream;
++interface nsIDOMBlob;
++
++[builtinclass, uuid(88e7d2a0-2e5b-4f65-9624-a61e607a9948)]
++interface nsIXMLHttpRequestEventTarget : nsIDOMEventTarget {
++  // event handler attributes
++};
++
++[builtinclass, uuid(d74c4dc4-bc8c-4f5d-b7f1-121a48750abe)]
++interface nsIXMLHttpRequestUpload : nsIXMLHttpRequestEventTarget {
++  // for future use
++};
++
++/**
++ * Mozilla's XMLHttpRequest is modelled after Microsoft's IXMLHttpRequest
++ * object. The goal has been to make Mozilla's version match Microsoft's
++ * version as closely as possible, but there are bound to be some differences.
++ *
++ * In general, Microsoft's documentation for IXMLHttpRequest can be used.
++ * Mozilla's interface definitions provide some additional documentation. The
++ * web page to look at is http://www.mozilla.org/xmlextras/
++ *
++ * Mozilla's XMLHttpRequest object can be created in JavaScript like this:
++ *   new XMLHttpRequest()
++ * compare to Internet Explorer:
++ *   new ActiveXObject("Msxml2.XMLHTTP")
++ *
++ * From native code, the way to set up onload and onerror handlers is a bit
++ * different. Here is a comment from Johnny Stenback <jst@netscape.com>:
++ *
++ *   The mozilla implementation of nsIXMLHttpRequest implements the interface
++ *   nsIDOMEventTarget and that's how you're supported to add event listeners.
++ *   Try something like this:
++ *
++ *   nsCOMPtr<nsIDOMEventTarget> target(do_QueryInterface(myxmlhttpreq));
++ *
++ *   target->AddEventListener(NS_LITERAL_STRING("load"), mylistener,
++ *                            PR_FALSE)
++ *
++ *   where mylistener is your event listener object that implements the
++ *   interface nsIDOMEventListener.
++ *
++ * Conclusion: Do not use event listeners on XMLHttpRequest from C++, unless
++ * you're aware of all the security implications.  And then think twice about
++ * it.
++ */
++[scriptable, uuid(6f54214c-7175-498d-9d2d-0429e38c2869)]
++interface nsIXMLHttpRequest : nsISupports
++{
++  /**
++   * The request uses a channel in order to perform the
++   * request.  This attribute represents the channel used
++   * for the request.  NULL if the channel has not yet been
++   * created.
++   *
++   * Mozilla only. Requires elevated privileges to access.
++   */
++  readonly attribute nsIChannel channel;
++
++  /**
++   * The response to the request is parsed as if it were a
++   * text/xml stream. This attributes represents the response as
++   * a DOM Document object. NULL if the request is unsuccessful or
++   * has not yet been sent.
++   */
++  readonly attribute nsIDOMDocument responseXML;
++
++  /**
++   * The response to the request as text.
++   * NULL if the request is unsuccessful or
++   * has not yet been sent.
++   */
++  readonly attribute AString responseText;
++
++  /**
++   * Determine a response format which response attribute returns.
++   * empty string (initial value) or "text": as text.
++   * "arraybuffer": as a typed array ArrayBuffer.
++   * "blob": as a File API Blob.
++   * "document": as a DOM Document object.
++   */
++  attribute AString responseType;
++
++  /**
++   * The response to the request as a specified format by responseType.
++   * NULL if the request is unsuccessful or
++   * has not yet been sent.
++   */
++  [implicit_jscontext] readonly attribute jsval /* any */ response;
++
++  /**
++   * The status of the response to the request for HTTP requests.
++   */
++  // XXX spec says unsigned short
++  readonly attribute unsigned long status;
++
++  /**
++   * The string representing the status of the response for
++   * HTTP requests.
++   */
++  readonly attribute ACString statusText;
++
++  /**
++   * If the request has been sent already, this method will
++   * abort the request.
++   */
++  [binaryname(SlowAbort)] void abort();
++
++  /**
++   * Returns all of the response headers as a string for HTTP
++   * requests.
++   *
++   * @returns A string containing all of the response headers.
++   *          The empty string if the response has not yet been received.
++   */
++  ACString getAllResponseHeaders();
++
++  /**
++   * Returns the text of the header with the specified name for
++   * HTTP requests.
++   *
++   * @param header The name of the header to retrieve
++   * @returns A string containing the text of the header specified.
++   *          NULL if the response has not yet been received or the
++   *          header does not exist in the response.
++   */
++  ACString getResponseHeader(in ACString header);
++
++%{C++
++  // note this is NOT virtual so this won't muck with the vtable!
++  inline nsresult Open(const nsACString& method, const nsACString& url,
++                       bool async, const nsAString& user,
++                       const nsAString& password) {
++    return Open(method, url, async, user, password, 3);
++  }
++%}
++  /**
++   * Meant to be a script-only method for initializing a request.
++   *
++   * If there is an "active" request (that is, if open() has been called
++   * already), this is equivalent to calling abort() and then open().
++   *
++   * @param method The HTTP method - either "POST" or "GET". Ignored
++   *               if the URL is not a HTTP URL.
++   * @param url The URL to which to send the request.
++   * @param async (optional) Whether the request is synchronous or
++   *              asynchronous i.e. whether send returns only after
++   *              the response is received or if it returns immediately after
++   *              sending the request. In the latter case, notification
++   *              of completion is sent through the event listeners.
++   *              The default value is true.
++   * @param user (optional) A username for authentication if necessary.
++   *             The default value is the empty string
++   * @param password (optional) A password for authentication if necessary.
++   *                 The default value is the empty string
++   */
++  [optional_argc] void open(in ACString method, in AUTF8String url,
++                            [optional] in boolean async,
++                            [optional,Undefined(Empty)] in DOMString user,
++                            [optional,Undefined(Empty)] in DOMString password);
++
++  /**
++   * Sends the request. If the request is asynchronous, returns
++   * immediately after sending the request. If it is synchronous
++   * returns only after the response has been received.
++   *
++   * All event listeners must be set before calling send().
++   *
++   * After the initial response, all event listeners will be cleared.
++   * // XXXbz what does that mean, exactly?   
++   *
++   * @param body Either an instance of nsIDOMDocument, nsIInputStream
++   *             or a string (nsISupportsString in the native calling
++   *             case). This is used to populate the body of the
++   *             HTTP request if the HTTP request method is "POST".
++   *             If the parameter is a nsIDOMDocument, it is serialized.
++   *             If the parameter is a nsIInputStream, then it must be
++   *             compatible with nsIUploadChannel.setUploadStream, and a
++   *             Content-Length header will be added to the HTTP request
++   *             with a value given by nsIInputStream.available.  Any
++   *             headers included at the top of the stream will be
++   *             treated as part of the message body.  The MIME type of
++   *             the stream should be specified by setting the Content-
++   *             Type header via the setRequestHeader method before
++   *             calling send.
++   */
++  void   send([optional] in nsIVariant body);
++
++  /**
++   * Sets a HTTP request header for HTTP requests. You must call open
++   * before setting the request headers.
++   *
++   * @param header The name of the header to set in the request.
++   * @param value The body of the header.
++   */
++  void   setRequestHeader(in ACString header, in ACString value);
++
++  /**
++   * The amount of milliseconds a request can take before being terminated.
++   * Initially zero. Zero means there is no timeout.
++   */
++  attribute unsigned long timeout;
++
++  /**
++   * The state of the request.
++   *
++   * Possible values:
++   *   0 UNSENT   open() has not been called yet.
++   *   1 OPENED   send() has not been called yet.
++   *   2 HEADERS_RECEIVED
++   *              send() has been called, headers and status are available.
++   *   3 LOADING  Downloading, responseText holds the partial data.
++   *   4 DONE     Finished with all operations.
++   */
++  const unsigned short UNSENT = 0;
++  const unsigned short OPENED = 1;
++  const unsigned short HEADERS_RECEIVED = 2;
++  const unsigned short LOADING = 3;
++  const unsigned short DONE = 4;
++  readonly attribute unsigned short readyState;
++
++  /**
++   * Override the mime type returned by the server (if any). This may
++   * be used, for example, to force a stream to be treated and parsed
++   * as text/xml, even if the server does not report it as such. This
++   * must be done before the <code>send</code> method is invoked.
++   *
++   * @param mimetype The type used to override that returned by the server
++   *                 (if any).
++   */
++  [binaryname(SlowOverrideMimeType)] void overrideMimeType(in DOMString mimetype);
++
++  /**
++   * Set to true if this is a background service request. This will
++   * prevent a load group being associated with the request, and
++   * suppress any security dialogs from being shown * to the user.
++   * In the cases where one of those dialogs would be shown, the request
++   * will simply fail instead.
++   */
++  attribute boolean mozBackgroundRequest;
++
++  /**
++   * When set to true attempts to make cross-site Access-Control requests
++   * with credentials such as cookies and authorization headers.
++   *
++   * Never affects same-site requests.
++   *
++   * Defaults to false.
++   */
++  attribute boolean withCredentials;
++
++  /**
++   * Initialize the object for use from C++ code with the principal, script
++   * context, and owner window that should be used.
++   *
++   * @param principal The principal to use for the request. This must not be
++   *                  null.
++   * @param globalObject The associated global for the request. Can be the
++   *                     outer window, a sandbox, or a backstage pass.
++   *                     May be null, but then the request cannot create a
++   *                     document.
++   * @param baseURI The base URI to use when resolving relative URIs. May be
++   *                null.
++   * @param loadGroup An optional load group to use when performing the request.
++   *                  This will be used even if the global has a window with a
++   *                  load group.
++   */
++  [noscript] void init(in nsIPrincipal principal,
++                       in nsIGlobalObject globalObject,
++                       in nsIURI baseURI,
++                       [optional] in nsILoadGroup loadGroup);
++
++  /**
++   * Upload process can be tracked by adding event listener to |upload|.
++   */
++  readonly attribute nsIXMLHttpRequestUpload upload;
++
++  /**
++   * If true, the request will be sent without cookie and authentication
++   * headers.
++   */
++  readonly attribute boolean mozAnon;
++
++  /**
++   * If true, the same origin policy will not be enforced on the request.
++   */
++  readonly attribute boolean mozSystem;
++};
++
++[uuid(840d0d00-e83e-4a29-b3c7-67e96e90a499)]
++interface nsIXHRSendable : nsISupports {
++  // contentTypeWithCharset can be set to the contentType or
++  // contentType+charset based on what the spec says.
++  // See: https://fetch.spec.whatwg.org/#concept-bodyinit-extract
++  void getSendInfo(out nsIInputStream body,
++                   out uint64_t contentLength,
++                   out ACString contentTypeWithCharset,
++                   out ACString charset);
++};
++
++%{ C++
++#define NS_XMLHTTPREQUEST_CID                       \
++ { /* d164e770-4157-11d4-9a42-000064657374 */       \
++  0xd164e770, 0x4157, 0x11d4,                       \
++ {0x9a, 0x42, 0x00, 0x00, 0x64, 0x65, 0x73, 0x74} }
++#define NS_XMLHTTPREQUEST_CONTRACTID \
++"@mozilla.org/xmlextras/xmlhttprequest;1"
++%}
+diff --git a/layout/build/nsLayoutModule.cpp b/layout/build/nsLayoutModule.cpp
+--- a/layout/build/nsLayoutModule.cpp
++++ b/layout/build/nsLayoutModule.cpp
+@@ -57,16 +57,17 @@
+ #include "nsIEventListenerService.h"
+ #include "nsIMessageManager.h"
+ 
+ // Transformiix stuff
+ #include "mozilla/dom/XPathEvaluator.h"
+ #include "txNodeSetAdaptor.h"
+ 
+ #include "mozilla/dom/DOMParser.h"
++#include "mozilla/dom/XMLHttpRequestMainThread.h"
+ #include "nsDOMSerializer.h"
+ 
+ // view stuff
+ #include "nsContentCreatorFunctions.h"
+ 
+ #include "nsHostObjectURI.h"
+ #include "nsGlobalWindowCommands.h"
+ #include "nsIControllerCommandTable.h"
+@@ -217,16 +218,17 @@ NS_GENERIC_FACTORY_CONSTRUCTOR(HTMLEdito
+ #define PRESENTATION_TCP_SESSION_TRANSPORT_CID \
+ { 0xc9d023f4, 0x6228, 0x4c07, { 0x8b, 0x1d, 0x9c, 0x19, 0x57, 0x3f, 0xaa, 0x27 } }
+ 
+ already_AddRefed<nsIPresentationService> NS_CreatePresentationService();
+ 
+ // Factory Constructor
+ NS_GENERIC_FACTORY_CONSTRUCTOR_INIT(txNodeSetAdaptor, Init)
+ NS_GENERIC_FACTORY_CONSTRUCTOR(nsDOMSerializer)
++NS_GENERIC_FACTORY_CONSTRUCTOR_INIT(XMLHttpRequestMainThread, Init)
+ NS_GENERIC_FACTORY_CONSTRUCTOR(nsHostObjectURI)
+ NS_GENERIC_FACTORY_CONSTRUCTOR(DOMParser)
+ NS_GENERIC_FACTORY_CONSTRUCTOR(LocalStorageManager)
+ NS_GENERIC_FACTORY_CONSTRUCTOR(SessionStorageManager)
+ NS_GENERIC_FACTORY_SINGLETON_CONSTRUCTOR(DOMRequestService,
+                                          DOMRequestService::FactoryCreate)
+ NS_GENERIC_FACTORY_SINGLETON_CONSTRUCTOR(QuotaManagerService,
+                                          QuotaManagerService::FactoryCreate)
+@@ -585,16 +587,17 @@ NS_DEFINE_NAMED_CID(NS_WINDOWCOMMANDTABL
+ NS_DEFINE_NAMED_CID(NS_WINDOWCONTROLLER_CID);
+ NS_DEFINE_NAMED_CID(NS_PLUGINDOCLOADERFACTORY_CID);
+ NS_DEFINE_NAMED_CID(NS_PLUGINDOCUMENT_CID);
+ NS_DEFINE_NAMED_CID(NS_VIDEODOCUMENT_CID);
+ NS_DEFINE_NAMED_CID(NS_STYLESHEETSERVICE_CID);
+ NS_DEFINE_NAMED_CID(TRANSFORMIIX_NODESET_CID);
+ NS_DEFINE_NAMED_CID(NS_XMLSERIALIZER_CID);
+ NS_DEFINE_NAMED_CID(NS_HOSTOBJECTURI_CID);
++NS_DEFINE_NAMED_CID(NS_XMLHTTPREQUEST_CID);
+ NS_DEFINE_NAMED_CID(NS_DOMPARSER_CID);
+ NS_DEFINE_NAMED_CID(NS_DOMSESSIONSTORAGEMANAGER_CID);
+ NS_DEFINE_NAMED_CID(NS_DOMLOCALSTORAGEMANAGER_CID);
+ NS_DEFINE_NAMED_CID(NS_TEXTEDITOR_CID);
+ NS_DEFINE_NAMED_CID(DOMREQUEST_SERVICE_CID);
+ NS_DEFINE_NAMED_CID(QUOTAMANAGER_SERVICE_CID);
+ NS_DEFINE_NAMED_CID(SERVICEWORKERMANAGER_CID);
+ NS_DEFINE_NAMED_CID(NOTIFICATIONTELEMETRYSERVICE_CID);
+@@ -833,16 +836,17 @@ static const mozilla::Module::CIDEntry k
+   { &kNS_WINDOWCONTROLLER_CID, false, nullptr, CreateWindowControllerWithSingletonCommandTable },
+   { &kNS_PLUGINDOCLOADERFACTORY_CID, false, nullptr, CreateContentDLF },
+   { &kNS_PLUGINDOCUMENT_CID, false, nullptr, CreatePluginDocument },
+   { &kNS_VIDEODOCUMENT_CID, false, nullptr, CreateVideoDocument },
+   { &kNS_STYLESHEETSERVICE_CID, false, nullptr, nsStyleSheetServiceConstructor },
+   { &kTRANSFORMIIX_NODESET_CID, false, nullptr, txNodeSetAdaptorConstructor },
+   { &kNS_XMLSERIALIZER_CID, false, nullptr, nsDOMSerializerConstructor },
+   { &kNS_HOSTOBJECTURI_CID, false, nullptr, nsHostObjectURIConstructor },
++  { &kNS_XMLHTTPREQUEST_CID, false, nullptr, XMLHttpRequestMainThreadConstructor },
+   { &kNS_DOMPARSER_CID, false, nullptr, DOMParserConstructor },
+   { &kNS_DOMSESSIONSTORAGEMANAGER_CID, false, nullptr, SessionStorageManagerConstructor },
+   { &kNS_DOMLOCALSTORAGEMANAGER_CID, false, nullptr, LocalStorageManagerConstructor },
+   { &kNS_TEXTEDITOR_CID, false, nullptr, TextEditorConstructor },
+   { &kDOMREQUEST_SERVICE_CID, false, nullptr, DOMRequestServiceConstructor },
+   { &kQUOTAMANAGER_SERVICE_CID, false, nullptr, QuotaManagerServiceConstructor },
+   { &kSERVICEWORKERMANAGER_CID, false, nullptr, ServiceWorkerManagerConstructor },
+   { &kNOTIFICATIONTELEMETRYSERVICE_CID, false, nullptr, NotificationTelemetryServiceConstructor },
+@@ -946,16 +950,17 @@ static const mozilla::Module::ContractID
+ #endif
+   { CONTENT_DLF_CONTRACTID, &kNS_CONTENT_DOCUMENT_LOADER_FACTORY_CID },
+   { NS_JSPROTOCOLHANDLER_CONTRACTID, &kNS_JSPROTOCOLHANDLER_CID },
+   { NS_WINDOWCONTROLLER_CONTRACTID, &kNS_WINDOWCONTROLLER_CID },
+   { PLUGIN_DLF_CONTRACTID, &kNS_PLUGINDOCLOADERFACTORY_CID },
+   { NS_STYLESHEETSERVICE_CONTRACTID, &kNS_STYLESHEETSERVICE_CID },
+   { TRANSFORMIIX_NODESET_CONTRACTID, &kTRANSFORMIIX_NODESET_CID },
+   { NS_XMLSERIALIZER_CONTRACTID, &kNS_XMLSERIALIZER_CID },
++  { NS_XMLHTTPREQUEST_CONTRACTID, &kNS_XMLHTTPREQUEST_CID },
+   { NS_DOMPARSER_CONTRACTID, &kNS_DOMPARSER_CID },
+   { "@mozilla.org/dom/localStorage-manager;1", &kNS_DOMLOCALSTORAGEMANAGER_CID },
+   // Keeping the old ContractID for backward compatibility
+   { "@mozilla.org/dom/storagemanager;1", &kNS_DOMLOCALSTORAGEMANAGER_CID },
+   { "@mozilla.org/dom/sessionStorage-manager;1", &kNS_DOMSESSIONSTORAGEMANAGER_CID },
+   { "@mozilla.org/editor/texteditor;1", &kNS_TEXTEDITOR_CID },
+   { DOMREQUEST_SERVICE_CONTRACTID, &kDOMREQUEST_SERVICE_CID },
+   { QUOTAMANAGER_SERVICE_CONTRACTID, &kQUOTAMANAGER_SERVICE_CID },
+diff --git a/xpcom/reflect/xptinfo/ShimInterfaceInfo.cpp b/xpcom/reflect/xptinfo/ShimInterfaceInfo.cpp
+--- a/xpcom/reflect/xptinfo/ShimInterfaceInfo.cpp
++++ b/xpcom/reflect/xptinfo/ShimInterfaceInfo.cpp
+@@ -51,16 +51,17 @@
+ #include "nsIDOMXMLDocument.h"
+ #include "nsIDOMXULCommandEvent.h"
+ #include "nsIDOMXULElement.h"
+ #include "nsIFrameLoader.h"
+ #include "nsIListBoxObject.h"
+ #include "nsISelection.h"
+ #include "nsITreeBoxObject.h"
+ #include "nsIWebBrowserPersistable.h"
++#include "nsIXMLHttpRequest.h"
+ 
+ #include "mozilla/dom/CharacterDataBinding.h"
+ #include "mozilla/dom/DOMRectBinding.h"
+ #include "mozilla/dom/DOMRectListBinding.h"
+ #include "mozilla/dom/ClipboardEventBinding.h"
+ #include "mozilla/dom/CommentBinding.h"
+ #include "mozilla/dom/CSSPrimitiveValueBinding.h"
+ #include "mozilla/dom/CSSStyleDeclarationBinding.h"
+@@ -115,16 +116,18 @@
+ #include "mozilla/dom/StyleSheetListBinding.h"
+ #include "mozilla/dom/SVGElementBinding.h"
+ #include "mozilla/dom/TextBinding.h"
+ #include "mozilla/dom/TimeEventBinding.h"
+ #include "mozilla/dom/TreeBoxObjectBinding.h"
+ #include "mozilla/dom/UIEventBinding.h"
+ #include "mozilla/dom/WheelEventBinding.h"
+ #include "mozilla/dom/XMLDocumentBinding.h"
++#include "mozilla/dom/XMLHttpRequestEventTargetBinding.h"
++#include "mozilla/dom/XMLHttpRequestUploadBinding.h"
+ #include "mozilla/dom/XMLSerializerBinding.h"
+ #include "mozilla/dom/XULCommandEventBinding.h"
+ #include "mozilla/dom/XULDocumentBinding.h"
+ #include "mozilla/dom/XULElementBinding.h"
+ 
+ using namespace mozilla;
+ 
+ struct ComponentsInterfaceShimEntry {
+@@ -221,16 +224,18 @@ const ComponentsInterfaceShimEntry kComp
+   DEFINE_SHIM(ScrollAreaEvent),
+   DEFINE_SHIM_WITH_CUSTOM_INTERFACE(nsIDOMSerializer, XMLSerializer),
+   DEFINE_SHIM(Text),
+   DEFINE_SHIM_WITH_CUSTOM_INTERFACE(nsITreeBoxObject, TreeBoxObject),
+   DEFINE_SHIM(UIEvent),
+   DEFINE_SHIM_WITH_CUSTOM_INTERFACE(nsIWebBrowserPersistable, FrameLoader),
+   DEFINE_SHIM(WheelEvent),
+   DEFINE_SHIM(XMLDocument),
++  DEFINE_SHIM_WITH_CUSTOM_INTERFACE(nsIXMLHttpRequestEventTarget, XMLHttpRequestEventTarget),
++  DEFINE_SHIM_WITH_CUSTOM_INTERFACE(nsIXMLHttpRequestUpload, XMLHttpRequestUpload),
+   DEFINE_SHIM(XULCommandEvent),
+   DEFINE_SHIM(XULElement),
+   DEFINE_SHIM_WITH_CUSTOM_INTERFACE(nsISelection, Selection),
+ };
+ 
+ #undef DEFINE_SHIM
+ #undef DEFINE_SHIM_WITH_CUSTOM_INTERFACE
+ 
+# HG changeset patch
+# User RealDolos <dolos@cock.li>
+# Date 1519565168 -3600
+#      Sun Feb 25 14:26:08 2018 +0100
+# Node ID f8965d0d49e6bddcbfbc515676be536d5688ee6b
+# Parent  02d36488c9e16f0a8180ce2add062c69cd76787e
+Readd nsIXMLHttpRequest (partial)
+
+diff --git a/browser/installer/package-manifest.in b/browser/installer/package-manifest.in
+--- a/browser/installer/package-manifest.in
++++ b/browser/installer/package-manifest.in
+@@ -216,16 +216,17 @@
+ @RESPATH@/components/dom_range.xpt
+ @RESPATH@/components/dom_security.xpt
+ @RESPATH@/components/dom_sidebar.xpt
+ @RESPATH@/components/dom_storage.xpt
+ #ifdef MOZ_WEBSPEECH
+ @RESPATH@/components/dom_webspeechrecognition.xpt
+ #endif
+ @RESPATH@/components/dom_workers.xpt
++@RESPATH@/components/dom_xhr.xpt
+ @RESPATH@/components/dom_xul.xpt
+ @RESPATH@/components/dom_presentation.xpt
+ @RESPATH@/components/downloads.xpt
+ @RESPATH@/components/editor.xpt
+ @RESPATH@/components/enterprisepolicies.xpt
+ @RESPATH@/components/extensions.xpt
+ @RESPATH@/components/exthandler.xpt
+ @RESPATH@/components/fastfind.xpt
+diff --git a/dom/base/FormData.h b/dom/base/FormData.h
+--- a/dom/base/FormData.h
++++ b/dom/base/FormData.h
+@@ -8,16 +8,17 @@
+ #define mozilla_dom_FormData_h
+ 
+ #include "mozilla/Attributes.h"
+ #include "mozilla/ErrorResult.h"
+ #include "mozilla/dom/BindingDeclarations.h"
+ #include "mozilla/dom/HTMLFormSubmission.h"
+ #include "mozilla/dom/File.h"
+ #include "mozilla/dom/FormDataBinding.h"
++#include "nsIXMLHttpRequest.h"
+ #include "nsTArray.h"
+ #include "nsWrapperCache.h"
+ 
+ namespace mozilla {
+ namespace dom {
+ 
+ class HTMLFormElement;
+ class GlobalObject;
+diff --git a/dom/fetch/BodyExtractor.cpp b/dom/fetch/BodyExtractor.cpp
+--- a/dom/fetch/BodyExtractor.cpp
++++ b/dom/fetch/BodyExtractor.cpp
+@@ -163,16 +163,26 @@ BodyExtractor<nsIInputStream>::GetAsStre
+   NS_ENSURE_SUCCESS(rv, rv);
+ 
+   nsCOMPtr<nsIInputStream> stream(mBody);
+   stream.forget(aResult);
+   return NS_OK;
+ }
+ 
+ template<> nsresult
++BodyExtractor<nsIXHRSendable>::GetAsStream(nsIInputStream** aResult,
++                                           uint64_t* aContentLength,
++                                           nsACString& aContentTypeWithCharset,
++                                           nsACString& aCharset) const
++{
++  return mBody->GetSendInfo(aResult, aContentLength, aContentTypeWithCharset,
++                            aCharset);
++}
++
++template<> nsresult
+ BodyExtractor<const Blob>::GetAsStream(nsIInputStream** aResult,
+                                        uint64_t* aContentLength,
+                                        nsACString& aContentTypeWithCharset,
+                                        nsACString& aCharset) const
+ {
+   return mBody->GetSendInfo(aResult, aContentLength, aContentTypeWithCharset,
+                             aCharset);
+ }
+diff --git a/dom/file/Blob.h b/dom/file/Blob.h
+--- a/dom/file/Blob.h
++++ b/dom/file/Blob.h
+@@ -10,16 +10,17 @@
+ #include "mozilla/Attributes.h"
+ #include "mozilla/ErrorResult.h"
+ #include "mozilla/dom/BindingDeclarations.h"
+ #include "mozilla/dom/BlobImpl.h"
+ #include "nsCycleCollectionParticipant.h"
+ #include "nsCOMPtr.h"
+ #include "nsIDOMBlob.h"
+ #include "nsIMutable.h"
++#include "nsIXMLHttpRequest.h"
+ #include "nsWrapperCache.h"
+ #include "nsWeakReference.h"
+ 
+ class nsIInputStream;
+ 
+ namespace mozilla {
+ namespace dom {
+ 
+diff --git a/dom/xhr/XMLHttpRequest.h b/dom/xhr/XMLHttpRequest.h
+--- a/dom/xhr/XMLHttpRequest.h
++++ b/dom/xhr/XMLHttpRequest.h
+@@ -5,16 +5,17 @@
+  * You can obtain one at http://mozilla.org/MPL/2.0/. */
+ 
+ #ifndef mozilla_dom_XMLHttpRequest_h
+ #define mozilla_dom_XMLHttpRequest_h
+ 
+ #include "mozilla/Attributes.h"
+ #include "mozilla/dom/XMLHttpRequestEventTarget.h"
+ #include "mozilla/dom/XMLHttpRequestBinding.h"
++#include "nsIXMLHttpRequest.h"
+ 
+ class nsIJSID;
+ 
+ namespace mozilla {
+ namespace dom {
+ 
+ class Blob;
+ class DOMString;
+diff --git a/dom/xhr/XMLHttpRequestMainThread.cpp b/dom/xhr/XMLHttpRequestMainThread.cpp
+--- a/dom/xhr/XMLHttpRequestMainThread.cpp
++++ b/dom/xhr/XMLHttpRequestMainThread.cpp
+@@ -244,16 +244,36 @@ XMLHttpRequestMainThread::~XMLHttpReques
+   mFlagSyncLooping = false;
+ 
+   mResultJSON.setUndefined();
+   mResultArrayBuffer = nullptr;
+   mozilla::DropJSObjects(this);
+ }
+ 
+ /**
++ * This Init method is called from the factory constructor.
++ */
++nsresult
++XMLHttpRequestMainThread::Init()
++{
++  nsIScriptSecurityManager* secMan = nsContentUtils::GetSecurityManager();
++  nsCOMPtr<nsIPrincipal> subjectPrincipal;
++  if (secMan) {
++    secMan->GetSystemPrincipal(getter_AddRefs(subjectPrincipal));
++  }
++  NS_ENSURE_STATE(subjectPrincipal);
++
++  // Instead of grabbing some random global from the context stack,
++  // let's use the default one (junk scope) for now.
++  // We should move away from this Init...
++  Construct(subjectPrincipal, xpc::NativeGlobal(xpc::PrivilegedJunkScope()));
++  return NS_OK;
++}
++
++/**
+  * This Init method should only be called by C++ consumers.
+  */
+ nsresult
+ XMLHttpRequestMainThread::Init(nsIPrincipal* aPrincipal,
+                                nsIGlobalObject* aGlobalObject,
+                                nsIURI* aBaseURI,
+                                nsILoadGroup* aLoadGroup)
+ {
+@@ -381,16 +401,17 @@ NS_IMPL_CYCLE_COLLECTION_TRACE_END
+ bool
+ XMLHttpRequestMainThread::IsCertainlyAliveForCC() const
+ {
+   return mWaitingForOnStopRequest;
+ }
+ 
+ // QueryInterface implementation for XMLHttpRequestMainThread
+ NS_INTERFACE_MAP_BEGIN_CYCLE_COLLECTION(XMLHttpRequestMainThread)
++  NS_INTERFACE_MAP_ENTRY(nsIXMLHttpRequest)
+   NS_INTERFACE_MAP_ENTRY(nsIRequestObserver)
+   NS_INTERFACE_MAP_ENTRY(nsIStreamListener)
+   NS_INTERFACE_MAP_ENTRY(nsIChannelEventSink)
+   NS_INTERFACE_MAP_ENTRY(nsIProgressEventSink)
+   NS_INTERFACE_MAP_ENTRY(nsIInterfaceRequestor)
+   NS_INTERFACE_MAP_ENTRY(nsITimerCallback)
+   NS_INTERFACE_MAP_ENTRY(nsINamed)
+   NS_INTERFACE_MAP_ENTRY(nsISizeOfEventTarget)
+@@ -428,29 +449,55 @@ XMLHttpRequestMainThread::SizeOfEventTar
+ 
+   return n;
+ 
+   // Measurement of the following members may be added later if DMD finds it is
+   // worthwhile:
+   // - lots
+ }
+ 
++NS_IMETHODIMP
++XMLHttpRequestMainThread::GetChannel(nsIChannel **aChannel)
++{
++  NS_ENSURE_ARG_POINTER(aChannel);
++  NS_IF_ADDREF(*aChannel = mChannel);
++
++  return NS_OK;
++}
++
+ static void LogMessage(const char* aWarning, nsPIDOMWindowInner* aWindow,
+                        const char16_t** aParams=nullptr, uint32_t aParamCount=0)
+ {
+   nsCOMPtr<nsIDocument> doc;
+   if (aWindow) {
+     doc = aWindow->GetExtantDoc();
+   }
+   nsContentUtils::ReportToConsole(nsIScriptError::warningFlag,
+                                   NS_LITERAL_CSTRING("DOM"), doc,
+                                   nsContentUtils::eDOM_PROPERTIES,
+                                   aWarning, aParams, aParamCount);
+ }
+ 
++NS_IMETHODIMP
++XMLHttpRequestMainThread::GetResponseXML(nsIDOMDocument **aResponseXML)
++{
++  ErrorResult rv;
++  nsIDocument* responseXML = GetResponseXML(rv);
++  if (rv.Failed()) {
++    return rv.StealNSResult();
++  }
++
++  if (!responseXML) {
++    *aResponseXML = nullptr;
++    return NS_OK;
++  }
++
++  return CallQueryInterface(responseXML, aResponseXML);
++}
++
+ nsIDocument*
+ XMLHttpRequestMainThread::GetResponseXML(ErrorResult& aRv)
+ {
+   if (mResponseType != XMLHttpRequestResponseType::_empty &&
+       mResponseType != XMLHttpRequestResponseType::Document) {
+     aRv.Throw(NS_ERROR_DOM_INVALID_STATE_XHR_HAS_WRONG_RESPONSETYPE_FOR_RESPONSEXML);
+     return nullptr;
+   }
+@@ -539,16 +586,30 @@ XMLHttpRequestMainThread::AppendToRespon
+   MOZ_ASSERT(result == kInputEmpty);
+   MOZ_ASSERT(read == aSrcBufferLen);
+   MOZ_ASSERT(written <= destBufferLen.value());
+   Unused << hadErrors;
+   helper.AddLength(written);
+   return NS_OK;
+ }
+ 
++NS_IMETHODIMP
++XMLHttpRequestMainThread::GetResponseText(nsAString& aResponseText)
++{
++  ErrorResult rv;
++  DOMString str;
++  GetResponseText(str, rv);
++  if (NS_WARN_IF(rv.Failed())) {
++    return rv.StealNSResult();
++  }
++
++  str.ToString(aResponseText);
++  return NS_OK;
++}
++
+ void
+ XMLHttpRequestMainThread::GetResponseText(DOMString& aResponseText,
+                                           ErrorResult& aRv)
+ {
+   XMLHttpRequestStringSnapshot snapshot;
+   GetResponseText(snapshot, aRv);
+   if (aRv.Failed()) {
+     return;
+@@ -630,16 +691,40 @@ XMLHttpRequestMainThread::CreateResponse
+   if (!JS_ParseJSON(aCx, string.BeginReading(), string.Length(), &value)) {
+     return NS_ERROR_FAILURE;
+   }
+ 
+   mResultJSON = value;
+   return NS_OK;
+ }
+ 
++NS_IMETHODIMP XMLHttpRequestMainThread::GetResponseType(nsAString& aResponseType)
++{
++  MOZ_ASSERT(mResponseType < XMLHttpRequestResponseType::EndGuard_);
++  const EnumEntry& entry =
++    XMLHttpRequestResponseTypeValues::strings[static_cast<uint32_t>(mResponseType)];
++  aResponseType.AssignASCII(entry.value, entry.length);
++  return NS_OK;
++}
++
++NS_IMETHODIMP XMLHttpRequestMainThread::SetResponseType(const nsAString& aResponseType)
++{
++  uint32_t i = 0;
++  for (const EnumEntry* entry = XMLHttpRequestResponseTypeValues::strings;
++       entry->value; ++entry, ++i) {
++    if (aResponseType.EqualsASCII(entry->value, entry->length)) {
++      ErrorResult rv;
++      SetResponseType(static_cast<XMLHttpRequestResponseType>(i), rv);
++      return rv.StealNSResult();
++    }
++  }
++
++  return NS_OK;
++}
++
+ void
+ XMLHttpRequestMainThread::SetResponseType(XMLHttpRequestResponseType aResponseType,
+                                           ErrorResult& aRv)
+ {
+   NOT_CALLABLE_IN_SYNC_SEND_RV
+ 
+   if (mState == XMLHttpRequestBinding::LOADING ||
+       mState == XMLHttpRequestBinding::DONE) {
+@@ -665,16 +750,24 @@ XMLHttpRequestMainThread::SetResponseTyp
+   if (aResponseType == XMLHttpRequestResponseType::Moz_chunked_arraybuffer) {
+     Telemetry::Accumulate(Telemetry::MOZ_CHUNKED_ARRAYBUFFER_IN_XHR, 1);
+   }
+ 
+   // Set the responseType attribute's value to the given value.
+   mResponseType = aResponseType;
+ }
+ 
++NS_IMETHODIMP
++XMLHttpRequestMainThread::GetResponse(JSContext *aCx, JS::MutableHandle<JS::Value> aResult)
++{
++  ErrorResult rv;
++  GetResponse(aCx, aResult, rv);
++  return rv.StealNSResult();
++}
++
+ void
+ XMLHttpRequestMainThread::GetResponse(JSContext* aCx,
+                                       JS::MutableHandle<JS::Value> aResponse,
+                                       ErrorResult& aRv)
+ {
+   switch (mResponseType) {
+   case XMLHttpRequestResponseType::_empty:
+   case XMLHttpRequestResponseType::Text:
+@@ -818,16 +911,24 @@ XMLHttpRequestMainThread::GetResponseURL
+     return;
+   }
+ 
+   nsAutoCString temp;
+   responseUrl->GetSpecIgnoringRef(temp);
+   CopyUTF8toUTF16(temp, aUrl);
+ }
+ 
++NS_IMETHODIMP
++XMLHttpRequestMainThread::GetStatus(uint32_t *aStatus)
++{
++  ErrorResult rv;
++  *aStatus = GetStatus(rv);
++  return rv.StealNSResult();
++}
++
+ uint32_t
+ XMLHttpRequestMainThread::GetStatus(ErrorResult& aRv)
+ {
+   // Make sure we don't leak status information from denied cross-site
+   // requests.
+   if (IsDeniedCrossSiteCORSRequest()) {
+     return 0;
+   }
+@@ -864,16 +965,24 @@ XMLHttpRequestMainThread::GetStatus(Erro
+   nsresult rv = httpChannel->GetResponseStatus(&status);
+   if (NS_FAILED(rv)) {
+     status = 0;
+   }
+ 
+   return status;
+ }
+ 
++NS_IMETHODIMP
++XMLHttpRequestMainThread::GetStatusText(nsACString& aOut)
++{
++  ErrorResult rv;
++  GetStatusText(aOut, rv);
++  return rv.StealNSResult();
++}
++
+ void
+ XMLHttpRequestMainThread::GetStatusText(nsACString& aStatusText,
+                                         ErrorResult& aRv)
+ {
+   // Return an empty status text on all error loads.
+   aStatusText.Truncate();
+ 
+   // Make sure we don't leak status information from denied cross-site
+@@ -1036,16 +1145,23 @@ XMLHttpRequestMainThread::AbortInternal(
+   // Step 3
+   if (mState == XMLHttpRequestBinding::DONE) {
+     ChangeState(XMLHttpRequestBinding::UNSENT, false); // no ReadystateChange event
+   }
+ 
+   mFlagSyncLooping = false;
+ }
+ 
++NS_IMETHODIMP
++XMLHttpRequestMainThread::SlowAbort()
++{
++  Abort();
++  return NS_OK;
++}
++
+ /*Method that checks if it is safe to expose a header value to the client.
+ It is used to check what headers are exposed for CORS requests.*/
+ bool
+ XMLHttpRequestMainThread::IsSafeHeader(const nsACString& aHeader,
+                                        NotNull<nsIHttpChannel*> aHttpChannel) const
+ {
+   // See bug #380418. Hide "Set-Cookie" headers from non-chrome scripts.
+   if (!IsSystemXHR() && nsContentUtils::IsForbiddenResponseHeader(aHeader)) {
+@@ -1093,16 +1209,24 @@ XMLHttpRequestMainThread::IsSafeHeader(c
+     }
+     if (aHeader.Equals(token, nsCaseInsensitiveCStringComparator())) {
+       isSafe = true;
+     }
+   }
+   return isSafe;
+ }
+ 
++NS_IMETHODIMP
++XMLHttpRequestMainThread::GetAllResponseHeaders(nsACString& aOut)
++{
++  ErrorResult rv;
++  GetAllResponseHeaders(aOut, rv);
++  return rv.StealNSResult();
++}
++
+ void
+ XMLHttpRequestMainThread::GetAllResponseHeaders(nsACString& aResponseHeaders,
+                                                 ErrorResult& aRv)
+ {
+   NOT_CALLABLE_IN_SYNC_SEND_RV
+ 
+   aResponseHeaders.Truncate();
+ 
+@@ -1152,16 +1276,25 @@ XMLHttpRequestMainThread::GetAllResponse
+     if (NS_SUCCEEDED(mChannel->GetContentLength(&length))) {
+       aResponseHeaders.AppendLiteral("Content-Length: ");
+       aResponseHeaders.AppendInt(length);
+       aResponseHeaders.AppendLiteral("\r\n");
+     }
+   }
+ }
+ 
++NS_IMETHODIMP
++XMLHttpRequestMainThread::GetResponseHeader(const nsACString& aHeader,
++                                            nsACString& aResult)
++{
++  ErrorResult rv;
++  GetResponseHeader(aHeader, aResult, rv);
++  return rv.StealNSResult();
++}
++
+ void
+ XMLHttpRequestMainThread::GetResponseHeader(const nsACString& header,
+                                             nsACString& _retval, ErrorResult& aRv)
+ {
+   NOT_CALLABLE_IN_SYNC_SEND_RV
+ 
+   _retval.SetIsVoid(true);
+ 
+@@ -1380,16 +1513,25 @@ XMLHttpRequestMainThread::IsSystemXHR() 
+ 
+ bool
+ XMLHttpRequestMainThread::InUploadPhase() const
+ {
+   // We're in the upload phase while our state is OPENED.
+   return mState == XMLHttpRequestBinding::OPENED;
+ }
+ 
++NS_IMETHODIMP
++XMLHttpRequestMainThread::Open(const nsACString& aMethod, const nsACString& aUrl,
++                               bool aAsync, const nsAString& aUsername,
++                               const nsAString& aPassword, uint8_t optional_argc)
++{
++  return Open(aMethod, aUrl, optional_argc > 0 ? aAsync : true,
++              aUsername, aPassword);
++}
++
+ // This case is hit when the async parameter is outright omitted, which
+ // should set it to true (and the username and password to null).
+ void
+ XMLHttpRequestMainThread::Open(const nsACString& aMethod, const nsAString& aUrl,
+                                ErrorResult& aRv)
+ {
+   Open(aMethod, aUrl, true, VoidString(), VoidString(), aRv);
+ }
+@@ -2672,16 +2814,96 @@ XMLHttpRequestMainThread::InitiateFetch(
+       mState = XMLHttpRequestBinding::DONE;
+       return NS_ERROR_DOM_NETWORK_ERR;
+     }
+   }
+ 
+   return NS_OK;
+ }
+ 
++NS_IMETHODIMP
++XMLHttpRequestMainThread::Send(nsIVariant* aVariant)
++{
++  if (!aVariant) {
++    return SendInternal(nullptr);
++  }
++
++  uint16_t dataType;
++  nsresult rv = aVariant->GetDataType(&dataType);
++  NS_ENSURE_SUCCESS(rv, rv);
++
++  if (dataType == nsIDataType::VTYPE_INTERFACE ||
++      dataType == nsIDataType::VTYPE_INTERFACE_IS) {
++    nsCOMPtr<nsISupports> supports;
++    nsID *iid;
++    rv = aVariant->GetAsInterface(&iid, getter_AddRefs(supports));
++    NS_ENSURE_SUCCESS(rv, rv);
++
++    free(iid);
++
++    // document?
++    nsCOMPtr<nsIDocument> doc = do_QueryInterface(supports);
++    if (doc) {
++      BodyExtractor<nsIDocument> body(doc);
++      return SendInternal(&body);
++    }
++
++    // nsISupportsString?
++    nsCOMPtr<nsISupportsString> wstr = do_QueryInterface(supports);
++    if (wstr) {
++      nsAutoString string;
++      wstr->GetData(string);
++      BodyExtractor<const nsAString> body(&string);
++      return SendInternal(&body);
++    }
++
++    // nsIInputStream?
++    nsCOMPtr<nsIInputStream> stream = do_QueryInterface(supports);
++    if (stream) {
++      BodyExtractor<nsIInputStream> body(stream);
++      return SendInternal(&body);
++    }
++
++    // nsIXHRSendable?
++    nsCOMPtr<nsIXHRSendable> sendable = do_QueryInterface(supports);
++    if (sendable) {
++      BodyExtractor<nsIXHRSendable> body(sendable);
++      return SendInternal(&body);
++    }
++
++    // ArrayBuffer?
++    JS::RootingContext* rootingCx = RootingCx();
++    JS::Rooted<JS::Value> realVal(rootingCx);
++
++    nsresult rv = aVariant->GetAsJSVal(&realVal);
++    if (NS_SUCCEEDED(rv) && !realVal.isPrimitive()) {
++      JS::Rooted<JSObject*> obj(rootingCx, realVal.toObjectOrNull());
++      RootedSpiderMonkeyInterface<ArrayBuffer> buf(rootingCx);
++      if (buf.Init(obj)) {
++        BodyExtractor<const ArrayBuffer> body(&buf);
++        return SendInternal(&body);
++      }
++    }
++  } else if (dataType == nsIDataType::VTYPE_VOID ||
++           dataType == nsIDataType::VTYPE_EMPTY) {
++    return SendInternal(nullptr);
++  }
++
++  char16_t* data = nullptr;
++  uint32_t len = 0;
++  rv = aVariant->GetAsWStringWithSize(&len, &data);
++  NS_ENSURE_SUCCESS(rv, rv);
++
++  nsString string;
++  string.Adopt(data, len);
++
++  BodyExtractor<const nsAString> body(&string);
++  return SendInternal(&body);
++}
++
+ void
+ XMLHttpRequestMainThread::UnsuppressEventHandlingAndResume()
+ {
+   MOZ_ASSERT(NS_IsMainThread());
+   MOZ_ASSERT(mFlagSynchronous);
+ 
+   if (mSuspendedDoc) {
+     mSuspendedDoc->UnsuppressEventHandlingAndFireEvents(true);
+@@ -2986,16 +3208,25 @@ XMLHttpRequestMainThread::IsLowercaseRes
+                                  "dom.xhr.lowercase_header.enabled",
+                                  false);
+     sLowercaseResponseHeaderAdded = true;
+   }
+ 
+   return sIsLowercaseResponseHeaderEnabled;
+ }
+ 
++NS_IMETHODIMP
++XMLHttpRequestMainThread::SetRequestHeader(const nsACString& aName,
++                                           const nsACString& aValue)
++{
++  ErrorResult aRv;
++  SetRequestHeader(aName, aValue, aRv);
++  return aRv.StealNSResult();
++}
++  
+ // http://dvcs.w3.org/hg/xhr/raw-file/tip/Overview.html#dom-xmlhttprequest-setrequestheader
+ void
+ XMLHttpRequestMainThread::SetRequestHeader(const nsACString& aName,
+                                            const nsACString& aValue,
+                                            ErrorResult& aRv)
+ {
+   NOT_CALLABLE_IN_SYNC_SEND_RV
+ 
+@@ -3040,16 +3271,31 @@ XMLHttpRequestMainThread::SetRequestHead
+   //                 callers, but will not merge.
+   if (isPrivilegedCaller && isForbiddenHeader) {
+     mAuthorRequestHeaders.Set(aName, value);
+   } else {
+     mAuthorRequestHeaders.MergeOrSet(aName, value);
+   }
+ }
+ 
++NS_IMETHODIMP
++XMLHttpRequestMainThread::GetTimeout(uint32_t *aTimeout)
++{
++  *aTimeout = Timeout();
++  return NS_OK;
++}
++
++NS_IMETHODIMP
++XMLHttpRequestMainThread::SetTimeout(uint32_t aTimeout)
++{
++  ErrorResult rv;
++  SetTimeout(aTimeout, rv);
++  return rv.StealNSResult();
++}
++
+ void
+ XMLHttpRequestMainThread::SetTimeout(uint32_t aTimeout, ErrorResult& aRv)
+ {
+   NOT_CALLABLE_IN_SYNC_SEND_RV
+ 
+   if (mFlagSynchronous &&
+       mState != XMLHttpRequestBinding::UNSENT && HasOrHasHadOwner()) {
+     /* Timeout is not supported for synchronous requests with an owning window,
+@@ -3113,16 +3359,23 @@ XMLHttpRequestMainThread::StartTimeoutTi
+     (uint32_t)((PR_Now() - mRequestSentTime) / PR_USEC_PER_MSEC);
+   mTimeoutTimer->InitWithCallback(
+     this,
+     mTimeoutMilliseconds > elapsed ? mTimeoutMilliseconds - elapsed : 0,
+     nsITimer::TYPE_ONE_SHOT
+   );
+ }
+ 
++NS_IMETHODIMP
++XMLHttpRequestMainThread::GetReadyState(uint16_t *aState)
++{
++  *aState = ReadyState();
++  return NS_OK;
++}
++
+ uint16_t
+ XMLHttpRequestMainThread::ReadyState() const
+ {
+   return mState;
+ }
+ 
+ void
+ XMLHttpRequestMainThread::OverrideMimeType(const nsAString& aMimeType,
+@@ -3135,16 +3388,31 @@ XMLHttpRequestMainThread::OverrideMimeTy
+     ResetResponse();
+     aRv.Throw(NS_ERROR_DOM_INVALID_STATE_XHR_MUST_NOT_BE_LOADING_OR_DONE);
+     return;
+   }
+ 
+   mOverrideMimeType = aMimeType;
+ }
+ 
++NS_IMETHODIMP
++XMLHttpRequestMainThread::SlowOverrideMimeType(const nsAString& aMimeType)
++{
++  ErrorResult aRv;
++  OverrideMimeType(aMimeType, aRv);
++  return aRv.StealNSResult();
++}
++
++NS_IMETHODIMP
++XMLHttpRequestMainThread::GetMozBackgroundRequest(bool *_retval)
++{
++  *_retval = MozBackgroundRequest();
++  return NS_OK;
++}
++
+ bool
+ XMLHttpRequestMainThread::MozBackgroundRequest() const
+ {
+   return mFlagBackgroundRequest;
+ }
+ 
+ nsresult
+ XMLHttpRequestMainThread::SetMozBackgroundRequest(bool aMozBackgroundRequest)
+@@ -3166,22 +3434,37 @@ XMLHttpRequestMainThread::SetMozBackgrou
+ void
+ XMLHttpRequestMainThread::SetMozBackgroundRequest(bool aMozBackgroundRequest,
+                                                   ErrorResult& aRv)
+ {
+   // No errors for this webIDL method on main-thread.
+   SetMozBackgroundRequest(aMozBackgroundRequest);
+ }
+ 
++NS_IMETHODIMP
++XMLHttpRequestMainThread::GetWithCredentials(bool *_retval)
++{
++  *_retval = WithCredentials();
++  return NS_OK;
++}
++
+ bool
+ XMLHttpRequestMainThread::WithCredentials() const
+ {
+   return mFlagACwithCredentials;
+ }
+ 
++NS_IMETHODIMP
++XMLHttpRequestMainThread::SetWithCredentials(bool aWithCredentials)
++{
++  ErrorResult rv;
++  SetWithCredentials(aWithCredentials, rv);
++  return rv.StealNSResult();
++}
++
+ void
+ XMLHttpRequestMainThread::SetWithCredentials(bool aWithCredentials, ErrorResult& aRv)
+ {
+   NOT_CALLABLE_IN_SYNC_SEND_RV
+ 
+   // Return error if we're already processing a request.  Note that we can't use
+   // ReadyState() here, because it can't differentiate between "opened" and
+   // "sent", so we use mState directly.
+@@ -3423,28 +3706,51 @@ XMLHttpRequestUpload*
+ XMLHttpRequestMainThread::GetUpload(ErrorResult& aRv)
+ {
+   if (!mUpload) {
+     mUpload = new XMLHttpRequestUpload(this);
+   }
+   return mUpload;
+ }
+ 
++NS_IMETHODIMP
++XMLHttpRequestMainThread::GetUpload(nsIXMLHttpRequestUpload** aUpload)
++{
++  ErrorResult rv;
++  RefPtr<XMLHttpRequestUpload> upload = GetUpload(rv);
++  upload.forget(aUpload);
++  return rv.StealNSResult();
++}
++
+ bool
+ XMLHttpRequestMainThread::MozAnon() const
+ {
+   return mIsAnon;
+ }
+ 
++NS_IMETHODIMP
++XMLHttpRequestMainThread::GetMozAnon(bool* aAnon)
++{
++  *aAnon = MozAnon();
++  return NS_OK;
++}
++
+ bool
+ XMLHttpRequestMainThread::MozSystem() const
+ {
+   return IsSystemXHR();
+ }
+ 
++NS_IMETHODIMP
++XMLHttpRequestMainThread::GetMozSystem(bool* aSystem)
++{
++  *aSystem = MozSystem();
++  return NS_OK;
++}
++
+ void
+ XMLHttpRequestMainThread::HandleTimeoutCallback()
+ {
+   if (mState == XMLHttpRequestBinding::DONE) {
+     NS_NOTREACHED("XMLHttpRequestMainThread::HandleTimeoutCallback with completed request");
+     // do nothing!
+     return;
+   }
+diff --git a/dom/xhr/XMLHttpRequestMainThread.h b/dom/xhr/XMLHttpRequestMainThread.h
+--- a/dom/xhr/XMLHttpRequestMainThread.h
++++ b/dom/xhr/XMLHttpRequestMainThread.h
+@@ -4,16 +4,17 @@
+  * License, v. 2.0. If a copy of the MPL was not distributed with this
+  * file, You can obtain one at http://mozilla.org/MPL/2.0/. */
+ 
+ #ifndef mozilla_dom_XMLHttpRequestMainThread_h
+ #define mozilla_dom_XMLHttpRequestMainThread_h
+ 
+ #include <bitset>
+ #include "nsAutoPtr.h"
++#include "nsIXMLHttpRequest.h"
+ #include "nsISupportsUtils.h"
+ #include "nsIURI.h"
+ #include "nsIHttpChannel.h"
+ #include "nsIDocument.h"
+ #include "nsIStreamListener.h"
+ #include "nsIChannelEventSink.h"
+ #include "nsIAsyncVerifyRedirectCallback.h"
+ #include "nsIInterfaceRequestor.h"
+@@ -156,16 +157,17 @@ public:
+   void GetCORSUnsafeHeaders(nsTArray<nsCString>& aArray) const;
+ };
+ 
+ class nsXHRParseEndListener;
+ 
+ // Make sure that any non-DOM interfaces added here are also added to
+ // nsXMLHttpRequestXPCOMifier.
+ class XMLHttpRequestMainThread final : public XMLHttpRequest,
++                                       public nsIXMLHttpRequest,
+                                        public nsIStreamListener,
+                                        public nsIChannelEventSink,
+                                        public nsIProgressEventSink,
+                                        public nsIInterfaceRequestor,
+                                        public nsITimerCallback,
+                                        public nsISizeOfEventTarget,
+                                        public nsINamed,
+                                        public MutableBlobStorageCallback
+@@ -219,16 +221,19 @@ public:
+     mIsSystem = aSystem;
+   }
+ 
+   void SetClientInfoAndController(const ClientInfo& aClientInfo,
+                                   const Maybe<ServiceWorkerDescriptor>& aController);
+ 
+   NS_DECL_ISUPPORTS_INHERITED
+ 
++  // nsIXMLHttpRequest
++  NS_DECL_NSIXMLHTTPREQUEST
++
+   // nsIStreamListener
+   NS_DECL_NSISTREAMLISTENER
+ 
+   // nsIRequestObserver
+   NS_DECL_NSIREQUESTOBSERVER
+ 
+   // nsIChannelEventSink
+   NS_DECL_NSICHANNELEVENTSINK
+@@ -271,18 +276,19 @@ public:
+ 
+   nsresult
+   Open(const nsACString& aMethod,
+        const nsACString& aUrl,
+        bool aAsync,
+        const nsAString& aUsername,
+        const nsAString& aPassword);
+ 
+-  virtual void
+-  SetRequestHeader(const nsACString& aName, const nsACString& aValue,
++  void
++  SetRequestHeader(const nsACString& aName,
++                   const nsACString& aValue,
+                    ErrorResult& aRv) override;
+ 
+   virtual uint32_t
+   Timeout() const override
+   {
+     return mTimeoutMilliseconds;
+   }
+ 
+@@ -413,19 +419,16 @@ public:
+                   ErrorResult& aRv);
+ 
+   virtual nsIDocument*
+   GetResponseXML(ErrorResult& aRv) override;
+ 
+   virtual bool
+   MozBackgroundRequest() const override;
+ 
+-  nsresult
+-  SetMozBackgroundRequest(bool aMozBackgroundRequest);
+-
+   virtual void
+   SetMozBackgroundRequest(bool aMozBackgroundRequest, ErrorResult& aRv) override;
+ 
+   virtual uint16_t
+   ErrorCode() const override
+   {
+     return static_cast<uint16_t>(mErrorLoad);
+   }
+@@ -462,21 +465,22 @@ public:
+ 
+   // This fires a trusted readystatechange event, which is not cancelable and
+   // doesn't bubble.
+   nsresult FireReadystatechangeEvent();
+   void DispatchProgressEvent(DOMEventTargetHelper* aTarget,
+                              const ProgressEventType aType,
+                              int64_t aLoaded, int64_t aTotal);
+ 
+-  // This is called by nsXULTemplateQueryProcessorXML.
+-  nsresult Init(nsIPrincipal* aPrincipal,
+-                nsIGlobalObject* aGlobalObject,
+-                nsIURI* aBaseURI,
+-                nsILoadGroup* aLoadGroup);
++  // This is called by the factory constructor.
++  nsresult Init();
++
++  nsresult init(nsIPrincipal* principal,
++                nsPIDOMWindowInner* globalObject,
++                nsIURI* baseURI);
+ 
+   void SetRequestObserver(nsIRequestObserver* aObserver);
+ 
+   NS_DECL_CYCLE_COLLECTION_SCRIPT_HOLDER_CLASS_INHERITED(XMLHttpRequestMainThread,
+                                                          XMLHttpRequest)
+   virtual bool IsCertainlyAliveForCC() const override;
+ 
+   bool AllowUploadProgress();
+diff --git a/dom/xhr/XMLHttpRequestUpload.cpp b/dom/xhr/XMLHttpRequestUpload.cpp
+--- a/dom/xhr/XMLHttpRequestUpload.cpp
++++ b/dom/xhr/XMLHttpRequestUpload.cpp
+@@ -6,19 +6,21 @@
+ 
+ #include "XMLHttpRequestUpload.h"
+ #include "mozilla/dom/XMLHttpRequestUploadBinding.h"
+ 
+ namespace mozilla {
+ namespace dom {
+ 
+ NS_INTERFACE_MAP_BEGIN(XMLHttpRequestUpload)
++  NS_INTERFACE_MAP_ENTRY(nsIXMLHttpRequestUpload)
+ NS_INTERFACE_MAP_END_INHERITING(XMLHttpRequestEventTarget)
+ 
+ NS_IMPL_ADDREF_INHERITED(XMLHttpRequestUpload, XMLHttpRequestEventTarget)
++
+ NS_IMPL_RELEASE_INHERITED(XMLHttpRequestUpload, XMLHttpRequestEventTarget)
+ 
+ /* virtual */ JSObject*
+ XMLHttpRequestUpload::WrapObject(JSContext* aCx, JS::Handle<JSObject*> aGivenProto)
+ {
+   return XMLHttpRequestUploadBinding::Wrap(aCx, this, aGivenProto);
+ }
+ 
+diff --git a/dom/xhr/XMLHttpRequestUpload.h b/dom/xhr/XMLHttpRequestUpload.h
+--- a/dom/xhr/XMLHttpRequestUpload.h
++++ b/dom/xhr/XMLHttpRequestUpload.h
+@@ -3,21 +3,23 @@
+ /* This Source Code Form is subject to the terms of the Mozilla Public
+  * License, v. 2.0. If a copy of the MPL was not distributed with this file,
+  * You can obtain one at http://mozilla.org/MPL/2.0/. */
+ 
+ #ifndef mozilla_dom_XMLHttpRequestUpload_h
+ #define mozilla_dom_XMLHttpRequestUpload_h
+ 
+ #include "mozilla/dom/XMLHttpRequestEventTarget.h"
++#include "nsIXMLHttpRequest.h"
+ 
+ namespace mozilla {
+ namespace dom {
+ 
+-class XMLHttpRequestUpload final : public XMLHttpRequestEventTarget
++class XMLHttpRequestUpload final : public XMLHttpRequestEventTarget,
++                                   public nsIXMLHttpRequestUpload
+ {
+ public:
+   explicit XMLHttpRequestUpload(DOMEventTargetHelper* aOwner)
+     : XMLHttpRequestEventTarget(aOwner)
+   {}
+ 
+   explicit XMLHttpRequestUpload()
+   {}
+diff --git a/dom/xhr/moz.build b/dom/xhr/moz.build
+--- a/dom/xhr/moz.build
++++ b/dom/xhr/moz.build
+@@ -2,16 +2,22 @@
+ # vim: set filetype=python:
+ # This Source Code Form is subject to the terms of the Mozilla Public
+ # License, v. 2.0. If a copy of the MPL was not distributed with this
+ # file, You can obtain one at http://mozilla.org/MPL/2.0/.
+ 
+ with Files("**"):
+     BUG_COMPONENT = ("Core", "DOM")
+ 
++XPIDL_SOURCES += [
++    'nsIXMLHttpRequest.idl',
++]
++
++XPIDL_MODULE = 'dom_xhr'
++
+ EXPORTS.mozilla.dom += [
+     'XMLHttpRequest.h',
+     'XMLHttpRequestEventTarget.h',
+     'XMLHttpRequestMainThread.h',
+     'XMLHttpRequestString.h',
+     'XMLHttpRequestUpload.h',
+ ]
+ 
+diff --git a/dom/xhr/nsIXMLHttpRequest.idl b/dom/xhr/nsIXMLHttpRequest.idl
+new file mode 100644
+--- /dev/null
++++ b/dom/xhr/nsIXMLHttpRequest.idl
+@@ -0,0 +1,319 @@
++/* -*- Mode: C++; tab-width: 2; indent-tabs-mode: nil; c-basic-offset: 2 -*- */
++/* This Source Code Form is subject to the terms of the Mozilla Public
++ * License, v. 2.0. If a copy of the MPL was not distributed with this
++ * file, You can obtain one at http://mozilla.org/MPL/2.0/. */
++
++#include "nsIDOMEventTarget.idl"
++
++interface nsIChannel;
++interface nsIDOMDocument;
++interface nsIDOMEventListener;
++interface nsILoadGroup;
++interface nsIPrincipal;
++interface nsIScriptContext;
++interface nsIURI;
++interface nsIVariant;
++interface nsIGlobalObject;
++interface nsIInputStream;
++interface nsIDOMBlob;
++
++[builtinclass, uuid(d74c4dc4-bc8c-4f5d-b7f1-121a48750abe)]
++interface nsIXMLHttpRequestUpload : nsIDOMEventTarget {
++  // for future use
++};
++
++/**
++ * Mozilla's XMLHttpRequest is modelled after Microsoft's IXMLHttpRequest
++ * object. The goal has been to make Mozilla's version match Microsoft's
++ * version as closely as possible, but there are bound to be some differences.
++ *
++ * In general, Microsoft's documentation for IXMLHttpRequest can be used.
++ * Mozilla's interface definitions provide some additional documentation. The
++ * web page to look at is http://www.mozilla.org/xmlextras/
++ *
++ * Mozilla's XMLHttpRequest object can be created in JavaScript like this:
++ *   new XMLHttpRequest()
++ * compare to Internet Explorer:
++ *   new ActiveXObject("Msxml2.XMLHTTP")
++ *
++ * From native code, the way to set up onload and onerror handlers is a bit
++ * different. Here is a comment from Johnny Stenback <jst@netscape.com>:
++ *
++ *   The mozilla implementation of nsIXMLHttpRequest implements the interface
++ *   nsIDOMEventTarget and that's how you're supported to add event listeners.
++ *   Try something like this:
++ *
++ *   nsCOMPtr<nsIDOMEventTarget> target(do_QueryInterface(myxmlhttpreq));
++ *
++ *   target->AddEventListener(NS_LITERAL_STRING("load"), mylistener,
++ *                            PR_FALSE)
++ *
++ *   where mylistener is your event listener object that implements the
++ *   interface nsIDOMEventListener.
++ *
++ * Conclusion: Do not use event listeners on XMLHttpRequest from C++, unless
++ * you're aware of all the security implications.  And then think twice about
++ * it.
++ */
++[scriptable, uuid(6f54214c-7175-498d-9d2d-0429e38c2869)]
++interface nsIXMLHttpRequest : nsISupports
++{
++  /**
++   * The request uses a channel in order to perform the
++   * request.  This attribute represents the channel used
++   * for the request.  NULL if the channel has not yet been
++   * created.
++   *
++   * Mozilla only. Requires elevated privileges to access.
++   */
++  readonly attribute nsIChannel channel;
++
++  /**
++   * The response to the request is parsed as if it were a
++   * text/xml stream. This attributes represents the response as
++   * a DOM Document object. NULL if the request is unsuccessful or
++   * has not yet been sent.
++   */
++  readonly attribute nsIDOMDocument responseXML;
++
++  /**
++   * The response to the request as text.
++   * NULL if the request is unsuccessful or
++   * has not yet been sent.
++   */
++  readonly attribute AString responseText;
++
++  /**
++   * Determine a response format which response attribute returns.
++   * empty string (initial value) or "text": as text.
++   * "arraybuffer": as a typed array ArrayBuffer.
++   * "blob": as a File API Blob.
++   * "document": as a DOM Document object.
++   */
++  attribute AString responseType;
++
++  /**
++   * The response to the request as a specified format by responseType.
++   * NULL if the request is unsuccessful or
++   * has not yet been sent.
++   */
++  [implicit_jscontext] readonly attribute jsval /* any */ response;
++
++  /**
++   * The status of the response to the request for HTTP requests.
++   */
++  // XXX spec says unsigned short
++  readonly attribute unsigned long status;
++
++  /**
++   * The string representing the status of the response for
++   * HTTP requests.
++   */
++  readonly attribute ACString statusText;
++
++  /**
++   * If the request has been sent already, this method will
++   * abort the request.
++   */
++  [binaryname(SlowAbort)] void abort();
++
++  /**
++   * Returns all of the response headers as a string for HTTP
++   * requests.
++   *
++   * @returns A string containing all of the response headers.
++   *          The empty string if the response has not yet been received.
++   */
++  ACString getAllResponseHeaders();
++
++  /**
++   * Returns the text of the header with the specified name for
++   * HTTP requests.
++   *
++   * @param header The name of the header to retrieve
++   * @returns A string containing the text of the header specified.
++   *          NULL if the response has not yet been received or the
++   *          header does not exist in the response.
++   */
++  ACString getResponseHeader(in ACString header);
++
++%{C++
++  // note this is NOT virtual so this won't muck with the vtable!
++  inline nsresult Open(const nsACString& method, const nsACString& url,
++                       bool async, const nsAString& user,
++                       const nsAString& password) {
++    return Open(method, url, async, user, password, 3);
++  }
++%}
++  /**
++   * Meant to be a script-only method for initializing a request.
++   *
++   * If there is an "active" request (that is, if open() has been called
++   * already), this is equivalent to calling abort() and then open().
++   *
++   * @param method The HTTP method - either "POST" or "GET". Ignored
++   *               if the URL is not a HTTP URL.
++   * @param url The URL to which to send the request.
++   * @param async (optional) Whether the request is synchronous or
++   *              asynchronous i.e. whether send returns only after
++   *              the response is received or if it returns immediately after
++   *              sending the request. In the latter case, notification
++   *              of completion is sent through the event listeners.
++   *              The default value is true.
++   * @param user (optional) A username for authentication if necessary.
++   *             The default value is the empty string
++   * @param password (optional) A password for authentication if necessary.
++   *                 The default value is the empty string
++   */
++  [optional_argc] void open(in ACString method, in AUTF8String url,
++                            [optional] in boolean async,
++                            [optional,Undefined(Empty)] in DOMString user,
++                            [optional,Undefined(Empty)] in DOMString password);
++
++  /**
++   * Sends the request. If the request is asynchronous, returns
++   * immediately after sending the request. If it is synchronous
++   * returns only after the response has been received.
++   *
++   * All event listeners must be set before calling send().
++   *
++   * After the initial response, all event listeners will be cleared.
++   * // XXXbz what does that mean, exactly?   
++   *
++   * @param body Either an instance of nsIDOMDocument, nsIInputStream
++   *             or a string (nsISupportsString in the native calling
++   *             case). This is used to populate the body of the
++   *             HTTP request if the HTTP request method is "POST".
++   *             If the parameter is a nsIDOMDocument, it is serialized.
++   *             If the parameter is a nsIInputStream, then it must be
++   *             compatible with nsIUploadChannel.setUploadStream, and a
++   *             Content-Length header will be added to the HTTP request
++   *             with a value given by nsIInputStream.available.  Any
++   *             headers included at the top of the stream will be
++   *             treated as part of the message body.  The MIME type of
++   *             the stream should be specified by setting the Content-
++   *             Type header via the setRequestHeader method before
++   *             calling send.
++   */
++  void   send([optional] in nsIVariant body);
++
++  /**
++   * Sets a HTTP request header for HTTP requests. You must call open
++   * before setting the request headers.
++   *
++   * @param header The name of the header to set in the request.
++   * @param value The body of the header.
++   */
++  void   setRequestHeader(in ACString header, in ACString value);
++
++  /**
++   * The amount of milliseconds a request can take before being terminated.
++   * Initially zero. Zero means there is no timeout.
++   */
++  attribute unsigned long timeout;
++
++  /**
++   * The state of the request.
++   *
++   * Possible values:
++   *   0 UNSENT   open() has not been called yet.
++   *   1 OPENED   send() has not been called yet.
++   *   2 HEADERS_RECEIVED
++   *              send() has been called, headers and status are available.
++   *   3 LOADING  Downloading, responseText holds the partial data.
++   *   4 DONE     Finished with all operations.
++   */
++  const unsigned short UNSENT = 0;
++  const unsigned short OPENED = 1;
++  const unsigned short HEADERS_RECEIVED = 2;
++  const unsigned short LOADING = 3;
++  const unsigned short DONE = 4;
++  readonly attribute unsigned short readyState;
++
++  /**
++   * Override the mime type returned by the server (if any). This may
++   * be used, for example, to force a stream to be treated and parsed
++   * as text/xml, even if the server does not report it as such. This
++   * must be done before the <code>send</code> method is invoked.
++   *
++   * @param mimetype The type used to override that returned by the server
++   *                 (if any).
++   */
++  [binaryname(SlowOverrideMimeType)] void overrideMimeType(in DOMString mimetype);
++
++  /**
++   * Set to true if this is a background service request. This will
++   * prevent a load group being associated with the request, and
++   * suppress any security dialogs from being shown * to the user.
++   * In the cases where one of those dialogs would be shown, the request
++   * will simply fail instead.
++   */
++  attribute boolean mozBackgroundRequest;
++
++  /**
++   * When set to true attempts to make cross-site Access-Control requests
++   * with credentials such as cookies and authorization headers.
++   *
++   * Never affects same-site requests.
++   *
++   * Defaults to false.
++   */
++  attribute boolean withCredentials;
++
++  /**
++   * Initialize the object for use from C++ code with the principal, script
++   * context, and owner window that should be used.
++   *
++   * @param principal The principal to use for the request. This must not be
++   *                  null.
++   * @param globalObject The associated global for the request. Can be the
++   *                     outer window, a sandbox, or a backstage pass.
++   *                     May be null, but then the request cannot create a
++   *                     document.
++   * @param baseURI The base URI to use when resolving relative URIs. May be
++   *                null.
++   * @param loadGroup An optional load group to use when performing the request.
++   *                  This will be used even if the global has a window with a
++   *                  load group.
++   */
++  [noscript] void init(in nsIPrincipal principal,
++                       in nsIGlobalObject globalObject,
++                       in nsIURI baseURI,
++                       [optional] in nsILoadGroup loadGroup);
++
++  /**
++   * Upload process can be tracked by adding event listener to |upload|.
++   */
++  readonly attribute nsIXMLHttpRequestUpload upload;
++
++  /**
++   * If true, the request will be sent without cookie and authentication
++   * headers.
++   */
++  readonly attribute boolean mozAnon;
++
++  /**
++   * If true, the same origin policy will not be enforced on the request.
++   */
++  readonly attribute boolean mozSystem;
++};
++
++[uuid(840d0d00-e83e-4a29-b3c7-67e96e90a499)]
++interface nsIXHRSendable : nsISupports {
++  // contentTypeWithCharset can be set to the contentType or
++  // contentType+charset based on what the spec says.
++  // See: https://fetch.spec.whatwg.org/#concept-bodyinit-extract
++  void getSendInfo(out nsIInputStream body,
++                   out uint64_t contentLength,
++                   out ACString contentTypeWithCharset,
++                   out ACString charset);
++};
++
++%{ C++
++#define NS_XMLHTTPREQUEST_CID                       \
++ { /* d164e770-4157-11d4-9a42-000064657374 */       \
++  0xd164e770, 0x4157, 0x11d4,                       \
++ {0x9a, 0x42, 0x00, 0x00, 0x64, 0x65, 0x73, 0x74} }
++#define NS_XMLHTTPREQUEST_CONTRACTID \
++"@mozilla.org/xmlextras/xmlhttprequest;1"
++%}
+diff --git a/layout/build/nsLayoutModule.cpp b/layout/build/nsLayoutModule.cpp
+--- a/layout/build/nsLayoutModule.cpp
++++ b/layout/build/nsLayoutModule.cpp
+@@ -57,16 +57,17 @@
+ #include "nsIEventListenerService.h"
+ #include "nsIMessageManager.h"
+ 
+ // Transformiix stuff
+ #include "mozilla/dom/XPathEvaluator.h"
+ #include "txNodeSetAdaptor.h"
+ 
+ #include "mozilla/dom/DOMParser.h"
++#include "mozilla/dom/XMLHttpRequestMainThread.h"
+ #include "nsDOMSerializer.h"
+ 
+ // view stuff
+ #include "nsContentCreatorFunctions.h"
+ 
+ #include "nsHostObjectURI.h"
+ #include "nsGlobalWindowCommands.h"
+ #include "nsIControllerCommandTable.h"
+@@ -217,16 +218,17 @@ NS_GENERIC_FACTORY_CONSTRUCTOR(HTMLEdito
+ #define PRESENTATION_TCP_SESSION_TRANSPORT_CID \
+ { 0xc9d023f4, 0x6228, 0x4c07, { 0x8b, 0x1d, 0x9c, 0x19, 0x57, 0x3f, 0xaa, 0x27 } }
+ 
+ already_AddRefed<nsIPresentationService> NS_CreatePresentationService();
+ 
+ // Factory Constructor
+ NS_GENERIC_FACTORY_CONSTRUCTOR_INIT(txNodeSetAdaptor, Init)
+ NS_GENERIC_FACTORY_CONSTRUCTOR(nsDOMSerializer)
++NS_GENERIC_FACTORY_CONSTRUCTOR_INIT(XMLHttpRequestMainThread, Init)
+ NS_GENERIC_FACTORY_CONSTRUCTOR(nsHostObjectURI)
+ NS_GENERIC_FACTORY_CONSTRUCTOR(DOMParser)
+ NS_GENERIC_FACTORY_CONSTRUCTOR(LocalStorageManager)
+ NS_GENERIC_FACTORY_CONSTRUCTOR(SessionStorageManager)
+ NS_GENERIC_FACTORY_SINGLETON_CONSTRUCTOR(DOMRequestService,
+                                          DOMRequestService::FactoryCreate)
+ NS_GENERIC_FACTORY_SINGLETON_CONSTRUCTOR(QuotaManagerService,
+                                          QuotaManagerService::FactoryCreate)
+@@ -585,16 +587,17 @@ NS_DEFINE_NAMED_CID(NS_WINDOWCOMMANDTABL
+ NS_DEFINE_NAMED_CID(NS_WINDOWCONTROLLER_CID);
+ NS_DEFINE_NAMED_CID(NS_PLUGINDOCLOADERFACTORY_CID);
+ NS_DEFINE_NAMED_CID(NS_PLUGINDOCUMENT_CID);
+ NS_DEFINE_NAMED_CID(NS_VIDEODOCUMENT_CID);
+ NS_DEFINE_NAMED_CID(NS_STYLESHEETSERVICE_CID);
+ NS_DEFINE_NAMED_CID(TRANSFORMIIX_NODESET_CID);
+ NS_DEFINE_NAMED_CID(NS_XMLSERIALIZER_CID);
+ NS_DEFINE_NAMED_CID(NS_HOSTOBJECTURI_CID);
++NS_DEFINE_NAMED_CID(NS_XMLHTTPREQUEST_CID);
+ NS_DEFINE_NAMED_CID(NS_DOMPARSER_CID);
+ NS_DEFINE_NAMED_CID(NS_DOMSESSIONSTORAGEMANAGER_CID);
+ NS_DEFINE_NAMED_CID(NS_DOMLOCALSTORAGEMANAGER_CID);
+ NS_DEFINE_NAMED_CID(NS_TEXTEDITOR_CID);
+ NS_DEFINE_NAMED_CID(DOMREQUEST_SERVICE_CID);
+ NS_DEFINE_NAMED_CID(QUOTAMANAGER_SERVICE_CID);
+ NS_DEFINE_NAMED_CID(SERVICEWORKERMANAGER_CID);
+ NS_DEFINE_NAMED_CID(NOTIFICATIONTELEMETRYSERVICE_CID);
+@@ -833,16 +836,17 @@ static const mozilla::Module::CIDEntry k
+   { &kNS_WINDOWCONTROLLER_CID, false, nullptr, CreateWindowControllerWithSingletonCommandTable },
+   { &kNS_PLUGINDOCLOADERFACTORY_CID, false, nullptr, CreateContentDLF },
+   { &kNS_PLUGINDOCUMENT_CID, false, nullptr, CreatePluginDocument },
+   { &kNS_VIDEODOCUMENT_CID, false, nullptr, CreateVideoDocument },
+   { &kNS_STYLESHEETSERVICE_CID, false, nullptr, nsStyleSheetServiceConstructor },
+   { &kTRANSFORMIIX_NODESET_CID, false, nullptr, txNodeSetAdaptorConstructor },
+   { &kNS_XMLSERIALIZER_CID, false, nullptr, nsDOMSerializerConstructor },
+   { &kNS_HOSTOBJECTURI_CID, false, nullptr, nsHostObjectURIConstructor },
++  { &kNS_XMLHTTPREQUEST_CID, false, nullptr, XMLHttpRequestMainThreadConstructor },
+   { &kNS_DOMPARSER_CID, false, nullptr, DOMParserConstructor },
+   { &kNS_DOMSESSIONSTORAGEMANAGER_CID, false, nullptr, SessionStorageManagerConstructor },
+   { &kNS_DOMLOCALSTORAGEMANAGER_CID, false, nullptr, LocalStorageManagerConstructor },
+   { &kNS_TEXTEDITOR_CID, false, nullptr, TextEditorConstructor },
+   { &kDOMREQUEST_SERVICE_CID, false, nullptr, DOMRequestServiceConstructor },
+   { &kQUOTAMANAGER_SERVICE_CID, false, nullptr, QuotaManagerServiceConstructor },
+   { &kSERVICEWORKERMANAGER_CID, false, nullptr, ServiceWorkerManagerConstructor },
+   { &kNOTIFICATIONTELEMETRYSERVICE_CID, false, nullptr, NotificationTelemetryServiceConstructor },
+@@ -946,16 +950,17 @@ static const mozilla::Module::ContractID
+ #endif
+   { CONTENT_DLF_CONTRACTID, &kNS_CONTENT_DOCUMENT_LOADER_FACTORY_CID },
+   { NS_JSPROTOCOLHANDLER_CONTRACTID, &kNS_JSPROTOCOLHANDLER_CID },
+   { NS_WINDOWCONTROLLER_CONTRACTID, &kNS_WINDOWCONTROLLER_CID },
+   { PLUGIN_DLF_CONTRACTID, &kNS_PLUGINDOCLOADERFACTORY_CID },
+   { NS_STYLESHEETSERVICE_CONTRACTID, &kNS_STYLESHEETSERVICE_CID },
+   { TRANSFORMIIX_NODESET_CONTRACTID, &kTRANSFORMIIX_NODESET_CID },
+   { NS_XMLSERIALIZER_CONTRACTID, &kNS_XMLSERIALIZER_CID },
++  { NS_XMLHTTPREQUEST_CONTRACTID, &kNS_XMLHTTPREQUEST_CID },
+   { NS_DOMPARSER_CONTRACTID, &kNS_DOMPARSER_CID },
+   { "@mozilla.org/dom/localStorage-manager;1", &kNS_DOMLOCALSTORAGEMANAGER_CID },
+   // Keeping the old ContractID for backward compatibility
+   { "@mozilla.org/dom/storagemanager;1", &kNS_DOMLOCALSTORAGEMANAGER_CID },
+   { "@mozilla.org/dom/sessionStorage-manager;1", &kNS_DOMSESSIONSTORAGEMANAGER_CID },
+   { "@mozilla.org/editor/texteditor;1", &kNS_TEXTEDITOR_CID },
+   { DOMREQUEST_SERVICE_CONTRACTID, &kDOMREQUEST_SERVICE_CID },
+   { QUOTAMANAGER_SERVICE_CONTRACTID, &kQUOTAMANAGER_SERVICE_CID },
+diff --git a/xpcom/reflect/xptinfo/ShimInterfaceInfo.cpp b/xpcom/reflect/xptinfo/ShimInterfaceInfo.cpp
+--- a/xpcom/reflect/xptinfo/ShimInterfaceInfo.cpp
++++ b/xpcom/reflect/xptinfo/ShimInterfaceInfo.cpp
+@@ -51,16 +51,17 @@
+ #include "nsIDOMXMLDocument.h"
+ #include "nsIDOMXULCommandEvent.h"
+ #include "nsIDOMXULElement.h"
+ #include "nsIFrameLoader.h"
+ #include "nsIListBoxObject.h"
+ #include "nsISelection.h"
+ #include "nsITreeBoxObject.h"
+ #include "nsIWebBrowserPersistable.h"
++#include "nsIXMLHttpRequest.h"
+ 
+ #include "mozilla/dom/CharacterDataBinding.h"
+ #include "mozilla/dom/DOMRectBinding.h"
+ #include "mozilla/dom/DOMRectListBinding.h"
+ #include "mozilla/dom/ClipboardEventBinding.h"
+ #include "mozilla/dom/CommentBinding.h"
+ #include "mozilla/dom/CSSPrimitiveValueBinding.h"
+ #include "mozilla/dom/CSSStyleDeclarationBinding.h"
+@@ -115,16 +116,18 @@
+ #include "mozilla/dom/StyleSheetListBinding.h"
+ #include "mozilla/dom/SVGElementBinding.h"
+ #include "mozilla/dom/TextBinding.h"
+ #include "mozilla/dom/TimeEventBinding.h"
+ #include "mozilla/dom/TreeBoxObjectBinding.h"
+ #include "mozilla/dom/UIEventBinding.h"
+ #include "mozilla/dom/WheelEventBinding.h"
+ #include "mozilla/dom/XMLDocumentBinding.h"
++#include "mozilla/dom/XMLHttpRequestEventTargetBinding.h"
++#include "mozilla/dom/XMLHttpRequestUploadBinding.h"
+ #include "mozilla/dom/XMLSerializerBinding.h"
+ #include "mozilla/dom/XULCommandEventBinding.h"
+ #include "mozilla/dom/XULDocumentBinding.h"
+ #include "mozilla/dom/XULElementBinding.h"
+ 
+ using namespace mozilla;
+ 
+ struct ComponentsInterfaceShimEntry {
+@@ -224,16 +227,17 @@ const ComponentsInterfaceShimEntry kComp
+   DEFINE_SHIM_WITH_CUSTOM_INTERFACE(nsITreeBoxObject, TreeBoxObject),
+   DEFINE_SHIM(UIEvent),
+   DEFINE_SHIM_WITH_CUSTOM_INTERFACE(nsIWebBrowserPersistable, FrameLoader),
+   DEFINE_SHIM(WheelEvent),
+   DEFINE_SHIM(XMLDocument),
+   DEFINE_SHIM(XULCommandEvent),
+   DEFINE_SHIM(XULElement),
+   DEFINE_SHIM_WITH_CUSTOM_INTERFACE(nsISelection, Selection),
++  DEFINE_SHIM_WITH_CUSTOM_INTERFACE(nsIXMLHttpRequestUpload, XMLHttpRequestUpload),
+ };
+ 
+ #undef DEFINE_SHIM
+ #undef DEFINE_SHIM_WITH_CUSTOM_INTERFACE
+ 
+ NS_IMPL_ISUPPORTS(ShimInterfaceInfo, nsISupports, nsIInterfaceInfo)
+ 
+ already_AddRefed<ShimInterfaceInfo>
+# HG changeset patch
+# User RealDolos <dolos@cock.li>
+# Date 1519934482 -3600
+#      Thu Mar 01 21:01:22 2018 +0100
+# Node ID 67149c628fb3a8daffb623c8843917fe5b80191f
+# Parent  f8965d0d49e6bddcbfbc515676be536d5688ee6b
+Add back tabbrowser id
+
+diff --git a/browser/base/content/browser.xul b/browser/base/content/browser.xul
+--- a/browser/base/content/browser.xul
++++ b/browser/base/content/browser.xul
+@@ -1206,16 +1206,17 @@
+         <browser id="sidebar" flex="1" autoscroll="false" disablehistory="true" disablefullscreen="true"
+                   style="min-width: 14em; width: 18em; max-width: 36em;" tooltip="aHTMLTooltip"/>
+       </vbox>
+ 
+       <splitter id="sidebar-splitter" class="chromeclass-extrachrome sidebar-splitter" hidden="true"/>
+       <vbox id="appcontent" flex="1">
+         <notificationbox id="high-priority-global-notificationbox" notificationside="top"/>
+         <tabbrowser flex="1" contenttooltip="aHTMLTooltip"
++                    id="content"
+                     tabcontainer="tabbrowser-tabs"
+                     contentcontextmenu="contentAreaContextMenu"
+                     autocompletepopup="PopupAutoComplete"
+                     selectmenulist="ContentSelectDropdown"
+                     datetimepicker="DateTimePickerPanel"/>
+       </vbox>
+       <vbox id="browser-border-end" hidden="true" layer="true"/>
+     </hbox>
